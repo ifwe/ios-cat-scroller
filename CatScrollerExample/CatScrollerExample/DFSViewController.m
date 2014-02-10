@@ -36,7 +36,7 @@
 - (CatScroller *)cat
 {
     if (!_cat) {
-        _cat = [[CatScroller alloc] initWithFrame:self.view.bounds
+        _cat = [[CatScroller alloc] initWithFrame:self.containerView.bounds
                           withCollectionCellClass:[CatScrollerCell class]];
     }
     return _cat;
@@ -45,7 +45,7 @@
 
 
 - (IBAction)addDataToCollection:(UIBarButtonItem *)sender {
-    [self.cat addData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] animated:YES];
+    [self.cat addData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] animated:YES];
 }
 
 @end

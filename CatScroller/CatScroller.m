@@ -279,13 +279,8 @@
                    layout:(UICollectionViewLayout *)collectionViewLayout
  heightForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    //    [self.collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass(self.collectionViewCellClass)
-    //                                                   forIndexPath:indexPath];
-    //    CGFloat height = [aCell render:self.internalData[indexPath.row]].frame.size.height;
     UICollectionViewCell<CatScrollerCollectionViewCell> *aCell = [[self.collectionViewCellClass alloc] init];
     [aCell render:self.internalData[indexPath.row] ForHeightOrWidth:YES];
-    
     return aCell.frame.size.height;
 }
 
