@@ -92,10 +92,7 @@
         layout.verticalItemSpacing = 5;
 //        layout.headerHeight = 15;
 //        layout.footerHeight = 10;
-        
-        UICollectionViewCell<CatScrollerCollectionViewCell> *tempCell = [[self.collectionViewCellClass alloc] init];
-        [tempCell render:self.internalData ForHeightOrWidth:YES];
-        layout.itemWidth = tempCell.frame.size.width;
+        layout.itemWidth = 150;
         
         
         
@@ -106,9 +103,6 @@
         
         // shift by footer view stuff
         collectionFrame.size.height -= self.footerViewContainer.frame.size.height;
-        
-        
-        
         
         _collectionView = [[UICollectionView alloc] initWithFrame:collectionFrame collectionViewLayout:layout];
         _collectionView.delegate = self;
@@ -290,7 +284,7 @@
     //                                                   forIndexPath:indexPath];
     //    CGFloat height = [aCell render:self.internalData[indexPath.row]].frame.size.height;
     UICollectionViewCell<CatScrollerCollectionViewCell> *aCell = [[self.collectionViewCellClass alloc] init];
-    [aCell render:self.internalData ForHeightOrWidth:YES];
+    [aCell render:self.internalData[indexPath.row] ForHeightOrWidth:YES];
     
     return aCell.frame.size.height;
 }
