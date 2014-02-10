@@ -45,7 +45,7 @@
 
 
 - (IBAction)addDataToCollection:(UIBarButtonItem *)sender {
-    [self.cat addData:@[@{}] animated:YES];
+    [self.cat addData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] animated:YES];
 }
 
 @end

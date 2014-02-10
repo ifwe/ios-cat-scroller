@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "CatScroller.h"
 
+
+#define CELL_HEIGHT_NAME (@"CellHeight")
+
 @interface CatScrollerCell : UICollectionViewCell <CatScrollerCollectionViewCell>
 
 @end
