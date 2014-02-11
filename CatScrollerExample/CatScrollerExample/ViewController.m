@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 
-@interface ViewController () <CatScrollerCollectionViewDelegate>
+@interface ViewController () <CatScrollerCollectionViewDelegate, CatScrollerCollectionViewDataSource>
 
 @property (nonatomic, strong) CatScroller *cat;
 
@@ -38,6 +38,13 @@
     if (!_cat) {
         _cat = [[CatScroller alloc] initWithFrame:self.containerView.bounds
                           withCollectionCellClass:[CatScrollerCell class] withDelegate:self];
+        _cat.dataSrouce = self;
+        
+        UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+        refreshControl.tintColor = [UIColor grayColor];
+        [refreshControl addTarget:self action:@selector(refershControlAction:) forControlEvents:UIControlEventValueChanged];
+        _cat.refreshControl = refreshControl;
+        
     }
     return _cat;
 }
@@ -45,13 +52,29 @@
 
 
 - (IBAction)addDataToCollection:(UIBarButtonItem *)sender {
-    [self.cat addData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] animated:YES];
+    [self.cat pushBackData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] completion:nil];
 }
 
 
 
 - (CGFloat) CatScrollerItemsWidth{
     return 150.0f;
+}
+
+- (void) refershControlAction: (UIRefreshControl *)sender{
+    [self.cat.refreshControl endRefreshing];
+}
+
+
+
+- (void) CatScrollerDidEnterCriticalRange
+{
+    [[[UIAlertView alloc] initWithTitle:@"I'm hungry for more data" message:@"" delegate:nil cancelButtonTitle:@"Data!" otherButtonTitles:nil] show];
+}
+
+- (NSUInteger) CatScrollerCriticalRangeItemCount
+{
+    return 5;
 }
 
 @end

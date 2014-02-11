@@ -33,7 +33,9 @@
 
 
 
-@protocol CatScrollerCollectionViewDelegate <NSObject>
+
+
+@protocol CatScrollerCollectionViewDelegate <UICollectionViewDelegate>
 
 @required
 
@@ -61,6 +63,47 @@
 
 
 
+@protocol CatScrollerCollectionViewDataSource <NSObject>
+
+@required
+
+/*
+ * Will be called When collection view is scrolled into the critical range
+ */
+- (void) CatScrollerDidEnterCriticalRange;
+
+- (NSUInteger) CatScrollerCriticalRangeItemCount;
+
+@end
+
+
+
+
+
+
+
+/*
+ * Time will the collection view ask for more data after entered the critical range
+ */
+typedef NS_OPTIONS(NSUInteger, CSDataRequestingPolicy) {// When in Critical Range:
+    CSDataRequestingPolicyOnViewWillBeginScroll,        // Notify delegate when a scroll begins
+    CSDataRequestingPolicyOnViewEndScroll,              // Notify delegate when a scroll ends
+    CSDataRequestingPolicyOnDisplayingNewItem,          // Notify delegate while render last item
+    CSDataRequestingPolicyAlways                        // Notify delegate without being blocked by states
+};
+
+/*
+ * The kind of state current last data request is
+ */
+typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Range:
+    CSDataRequestingStateNormal,                        // Notify delegate and wait for data to be added
+    CSDataRequestingStateWaitingForAddingData,          // Suppress any notification to the delegate until the data is added
+    CSDataRequestingStateNoMoreData                     // Suppress any notification to the delegate
+};
+
+
+
+
 
 
 @interface CatScroller : NSObject
@@ -77,7 +120,34 @@
 @property (strong, nonatomic) UIView *footerView;
 
 
+/*
+ * Collection view refresh control
+ * To disable refresh control: just set it to nil
+ */
+@property (strong, nonatomic) UIRefreshControl * refreshControl;
+
+/*
+ * Current data update policy
+ * Default: CSDataRequestingPolicyOnDisplayingNewItem
+ */
+@property (nonatomic) CSDataRequestingPolicy currentDataUpdatePloicy;
+
+/*
+ * Current data request state
+ * Default: CSDataRequestingStateWaitingForAddingData
+ */
+@property (nonatomic) CSDataRequestingState currentDataRequestState;
+
+
+/*
+ * View delegate
+ */
 @property (weak, nonatomic) id<CatScrollerCollectionViewDelegate> viewDelegate;
+
+/*
+ *
+ */
+@property (weak, nonatomic) id<CatScrollerCollectionViewDataSource> dataSrouce;
 
 
 /*
@@ -100,8 +170,11 @@
 - (void) updateCollectionViewCellClass:(Class) cellClass;
 
 /*
- * will add data to the internal data array and should animate into the collection view
+ * will add data to the internal data array and a completion block
  */
-- (void) addData:(NSArray *) data animated:(BOOL) animated;
+- (void) pushBackData:(NSArray *) data completion:(void (^)(BOOL finished))completion;
+
+
+
 
 @end

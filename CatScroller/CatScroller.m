@@ -92,8 +92,10 @@
 {
     if (self = [super init]) {
         _containerFrame = frame;
-        
         _viewDelegate = delegate;
+        
+        _currentDataRequestState = CSDataRequestingStateWaitingForAddingData;
+        _currentDataUpdatePloicy = CSDataRequestingPolicyOnDisplayingNewItem;
         
         [self updateCollectionViewCellClass:cellClass];
         
@@ -192,7 +194,7 @@
 - (NSMutableArray *)internalData
 {
     if (!_internalData) {
-        _internalData = [NSMutableArray new];
+        _internalData = [[NSMutableArray alloc] init];
     }
     return _internalData;
 }
@@ -228,6 +230,17 @@
 }
 
 
+
+- (void)setRefreshControl:(UIRefreshControl *)refreshControl
+{
+    [_refreshControl removeFromSuperview];
+    _refreshControl = refreshControl;
+    if (_refreshControl) {
+        [self.collectionView addSubview:_refreshControl];
+    }
+}
+
+
 #pragma mark - view functions
 
 - (void)updateCollectionViewCellClass:(Class)cellClass
@@ -237,8 +250,14 @@
     
 }
 
-- (void) addData:(NSArray *) data animated:(BOOL) animated
+- (void) pushBackData:(NSArray *) data completion:(void (^)(BOOL finished))completion
 {
+    // return to normal state only if it's in CSDataRequestingStateWaitingForAddingData
+    if (self.currentDataRequestState == CSDataRequestingStateWaitingForAddingData)
+    {
+        self.currentDataRequestState = CSDataRequestingStateNormal;
+    }
+    
     NSMutableArray * indices = [[NSMutableArray alloc] init];
     
     NSUInteger startValue = self.internalData.count;
@@ -252,10 +271,21 @@
     [self.collectionView performBatchUpdates:^{
         [self.collectionView insertItemsAtIndexPaths:indices];
     } completion:^(BOOL finished) {
-        
+        if (self.currentDataUpdatePloicy != CSDataRequestingPolicyOnDisplayingNewItem) {
+            [self notifyDelegateIfReachedCriticalRange:[self findLargestIndexFromVisibleCells] updateFromPolicy:CSDataRequestingPolicyAlways];
+        }
+        if (completion) completion(finished);
     }];
 }
 
+- (NSUInteger)findLargestIndexFromVisibleCells {
+    __block NSUInteger largestIndex = 0;
+    
+    [self.collectionView.indexPathsForVisibleItems enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
+        largestIndex = MAX(obj.row, largestIndex);
+    }];
+    return largestIndex;
+}
 
 - (void) setupLayoutConstraint
 {
@@ -266,10 +296,24 @@
     self.footerViewContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
 }
 
-#pragma mark - UICollectionViewDataSource, UICollectionViewDelegate
+- (void) notifyDelegateIfReachedCriticalRange:(NSUInteger) largestIndex updateFromPolicy: (CSDataRequestingPolicy) policy
+{
+    if ((self.internalData.count - largestIndex) >= [self.dataSrouce CatScrollerCriticalRangeItemCount]) {
+        return;
+    }
+    if (self.currentDataUpdatePloicy == policy && self.currentDataRequestState == CSDataRequestingStateNormal) {
+        self.currentDataRequestState = CSDataRequestingStateWaitingForAddingData;
+        
+        [self.dataSrouce CatScrollerDidEnterCriticalRange];
+        
+    }else if (policy == CSDataRequestingPolicyAlways) {
+        [self.dataSrouce CatScrollerDidEnterCriticalRange];
+    }
+}
+
+#pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     return self.internalData.count;
@@ -281,6 +325,8 @@
     UICollectionViewCell<CatScrollerCollectionViewCell> *aCell =
     [self.collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass(self.collectionViewCellClass)
                                                    forIndexPath:indexPath];
+    [self notifyDelegateIfReachedCriticalRange:indexPath.row updateFromPolicy:CSDataRequestingPolicyOnDisplayingNewItem];
+    
     return [aCell render:self.internalData[indexPath.row] ForHeightOrWidth:NO];
 }
 
@@ -300,6 +346,19 @@
                                                          forIndexPath:indexPath];
     }
     return reusableView;
+}
+
+
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    [self notifyDelegateIfReachedCriticalRange:[self findLargestIndexFromVisibleCells] updateFromPolicy:CSDataRequestingPolicyOnViewWillBeginScroll];
+}
+
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self notifyDelegateIfReachedCriticalRange:[self findLargestIndexFromVisibleCells] updateFromPolicy:CSDataRequestingPolicyOnViewEndScroll];
 }
 
 #pragma mark - CHTCollectionViewDelegateWaterfallLayout
