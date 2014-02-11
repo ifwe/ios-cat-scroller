@@ -10,6 +10,6 @@
 #import "CatScroller.h"
 #import "catScrollerCell.h"
 
-@interface DFSViewController : UIViewController
+@interface ViewController : UIViewController
 
 @end

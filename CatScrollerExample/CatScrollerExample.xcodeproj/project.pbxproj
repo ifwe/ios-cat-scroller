@@ -15,7 +15,7 @@
 		7C2291AC18A40DC100ABBE06 /* DFSAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2291AB18A40DC100ABBE06 /* DFSAppDelegate.m */; };
 		7C2291AF18A40DC100ABBE06 /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C2291AD18A40DC100ABBE06 /* Main_iPhone.storyboard */; };
 		7C2291B218A40DC100ABBE06 /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C2291B018A40DC100ABBE06 /* Main_iPad.storyboard */; };
-		7C2291B518A40DC100ABBE06 /* DFSViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2291B418A40DC100ABBE06 /* DFSViewController.m */; };
+		7C2291B518A40DC100ABBE06 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C2291B418A40DC100ABBE06 /* ViewController.m */; };
 		7C2291B718A40DC100ABBE06 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C2291B618A40DC100ABBE06 /* Images.xcassets */; };
 		7C2291BE18A40DC200ABBE06 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C2291BD18A40DC200ABBE06 /* XCTest.framework */; };
 		7C2291BF18A40DC200ABBE06 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C22919B18A40DC100ABBE06 /* Foundation.framework */; };
@@ -52,8 +52,8 @@
 		7C2291AB18A40DC100ABBE06 /* DFSAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DFSAppDelegate.m; sourceTree = "<group>"; };
 		7C2291AE18A40DC100ABBE06 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPhone.storyboard; sourceTree = "<group>"; };
 		7C2291B118A40DC100ABBE06 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main_iPad.storyboard; sourceTree = "<group>"; };
-		7C2291B318A40DC100ABBE06 /* DFSViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DFSViewController.h; sourceTree = "<group>"; };
-		7C2291B418A40DC100ABBE06 /* DFSViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DFSViewController.m; sourceTree = "<group>"; };
+		7C2291B318A40DC100ABBE06 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		7C2291B418A40DC100ABBE06 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		7C2291B618A40DC100ABBE06 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7C2291BC18A40DC200ABBE06 /* CatScrollerExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CatScrollerExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C2291BD18A40DC200ABBE06 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -134,8 +134,8 @@
 				7C2291AB18A40DC100ABBE06 /* DFSAppDelegate.m */,
 				7C2291AD18A40DC100ABBE06 /* Main_iPhone.storyboard */,
 				7C2291B018A40DC100ABBE06 /* Main_iPad.storyboard */,
-				7C2291B318A40DC100ABBE06 /* DFSViewController.h */,
-				7C2291B418A40DC100ABBE06 /* DFSViewController.m */,
+				7C2291B318A40DC100ABBE06 /* ViewController.h */,
+				7C2291B418A40DC100ABBE06 /* ViewController.m */,
 				7C2291B618A40DC100ABBE06 /* Images.xcassets */,
 				7C2291A218A40DC100ABBE06 /* Supporting Files */,
 				7CF7FF4018A4560400F2C851 /* catScrollerCell.h */,
@@ -300,7 +300,7 @@
 				7C22AA6E18A95A44000512BF /* CatScrollerDefaultHeaderView.m in Sources */,
 				7CF7FF3F18A451BA00F2C851 /* CHTCollectionViewWaterfallLayout.m in Sources */,
 				7C2291AC18A40DC100ABBE06 /* DFSAppDelegate.m in Sources */,
-				7C2291B518A40DC100ABBE06 /* DFSViewController.m in Sources */,
+				7C2291B518A40DC100ABBE06 /* ViewController.m in Sources */,
 				7C2291D618A40FEF00ABBE06 /* CatScroller.m in Sources */,
 				7C22AA7118A95E51000512BF /* CatScrollerDefaultFooterView.m in Sources */,
 				7C2291A818A40DC100ABBE06 /* main.m in Sources */,

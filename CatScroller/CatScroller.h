@@ -10,6 +10,8 @@
 #import <UIKit/UIKit.h>
 #import "CHTCollectionViewWaterfallLayout.h"
 
+
+// This ui collection view cell need to conforms to this protocol
 @protocol CatScrollerCollectionViewCell <NSObject>
 
 @required
@@ -27,6 +29,40 @@
 @end
 
 
+
+
+
+
+@protocol CatScrollerCollectionViewDelegate <NSObject>
+
+@required
+
+
+/*
+ * Sets items' width. All item can have the same width
+ */
+- (CGFloat) CatScrollerItemsWidth;
+
+@optional
+
+/*
+ * Sets section's inset
+ */
+- (UIEdgeInsets) CatScrollerSectionInset;
+
+/*
+ * Sets item's vertical spacing
+ */
+- (CGFloat) CatScrollerVerticalItemSpacing;
+
+
+@end
+
+
+
+
+
+
 @interface CatScroller : NSObject
 
 /*
@@ -41,19 +77,18 @@
 @property (strong, nonatomic) UIView *footerView;
 
 
-@property (strong, nonatomic) Class collectionViewHeaderViewClass;
-@property (strong, nonatomic) Class collectionViewFooterViewClass;
+@property (weak, nonatomic) id<CatScrollerCollectionViewDelegate> viewDelegate;
 
 
 /*
  * Manufactures a CatScroller
  */
-+ (id) CatScrollerWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass;
++ (id) CatScrollerWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>) delegate;
 
 /*
  * The frame will set the containerView's size of the container frame
  */
-- (id) initWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass;
+- (id) initWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>) delegate;
 
 /*
  * This tells what kind of cell should the collection view uses.

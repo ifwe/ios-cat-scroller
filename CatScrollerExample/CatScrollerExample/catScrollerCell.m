@@ -28,6 +28,7 @@
 - (UICollectionViewCell *)render:(id)cellModel ForHeightOrWidth:(BOOL)isRenderingForHeightOrWidth
 {
     NSDictionary *dict = ([cellModel isKindOfClass:[NSDictionary class]])?cellModel:nil;
+    
     NSUInteger cellHeight = [dict[CELL_HEIGHT_NAME] integerValue];
     
     self.bounds = CGRectMake(0, 0, 150, cellHeight);

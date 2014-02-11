@@ -15,6 +15,26 @@
 #define HEADER_IDENTIFIER (@"WaterfallHeader")
 #define FOOTER_IDENTIFIER (@"WaterfallFooter")
 
+#define DEFAULT_SECTION_INSET (UIEdgeInsetsMake(9, 9, 9, 9))
+#define DEFAULT_ITEM_VERTICAL_HEIGHT (5.0f)
+
+
+@implementation NSObject (CatScroller)
+
+
+- (UIEdgeInsets) CatScrollerSectionInset{
+    return DEFAULT_SECTION_INSET;
+}
+
+
+- (CGFloat) CatScrollerVerticalItemSpacing{
+    return DEFAULT_ITEM_VERTICAL_HEIGHT;
+}
+
+@end
+
+
+
 @interface CatScroller ()<UICollectionViewDataSource, CHTCollectionViewDelegateWaterfallLayout>
 /*
  * The frame of container
@@ -41,6 +61,15 @@
  * The cell will be use by the collection view
  */
 @property (strong) Class collectionViewCellClass;
+
+
+/*
+ * Collection view's section header and footer class
+ */
+@property (strong, nonatomic) Class collectionViewHeaderViewClass;
+@property (strong, nonatomic) Class collectionViewFooterViewClass;
+
+
 @end
 
 
@@ -53,16 +82,19 @@
 
 #pragma mark - init functions
 
-+ (id) CatScrollerWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass
++ (id) CatScrollerWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>)delegate
 {
-    return [[[self class] alloc] initWithFrame:frame withCollectionCellClass:cellClass];
+    return [[[self class] alloc] initWithFrame:frame withCollectionCellClass:cellClass withDelegate:delegate];
 }
 
 
-- (id) initWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass
+- (id) initWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>)delegate
 {
     if (self = [super init]) {
         _containerFrame = frame;
+        
+        _viewDelegate = delegate;
+        
         [self updateCollectionViewCellClass:cellClass];
         
         [self.containerView addSubview:self.collectionView];
@@ -88,11 +120,9 @@
         
         CHTCollectionViewWaterfallLayout *layout = [[CHTCollectionViewWaterfallLayout alloc] init];
         
-        layout.sectionInset = UIEdgeInsetsMake(9, 9, 9, 9);
-        layout.verticalItemSpacing = 5;
-//        layout.headerHeight = 15;
-//        layout.footerHeight = 10;
-        layout.itemWidth = 150;
+        layout.sectionInset = [self.viewDelegate CatScrollerSectionInset];
+        layout.verticalItemSpacing = [self.viewDelegate CatScrollerVerticalItemSpacing];
+        layout.itemWidth = [self.viewDelegate CatScrollerItemsWidth];
         
         
         

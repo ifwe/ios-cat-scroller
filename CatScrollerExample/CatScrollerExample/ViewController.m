@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Tagged. All rights reserved.
 //
 
-#import "DFSViewController.h"
+#import "ViewController.h"
 
-@interface DFSViewController ()
+@interface ViewController () <CatScrollerCollectionViewDelegate>
 
 @property (nonatomic, strong) CatScroller *cat;
 
@@ -16,7 +16,7 @@
 
 @end
 
-@implementation DFSViewController
+@implementation ViewController
 
 - (void)viewDidLoad
 {
@@ -37,7 +37,7 @@
 {
     if (!_cat) {
         _cat = [[CatScroller alloc] initWithFrame:self.containerView.bounds
-                          withCollectionCellClass:[CatScrollerCell class]];
+                          withCollectionCellClass:[CatScrollerCell class] withDelegate:self];
     }
     return _cat;
 }
@@ -46,6 +46,12 @@
 
 - (IBAction)addDataToCollection:(UIBarButtonItem *)sender {
     [self.cat addData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] animated:YES];
+}
+
+
+
+- (CGFloat) CatScrollerItemsWidth{
+    return 150.0f;
 }
 
 @end
