@@ -418,21 +418,7 @@
     if ([self.viewDelegate conformsToProtocol:@protocol(CatScrollerCollectionViewDelegate)]
         && [self.viewDelegate respondsToSelector:anInvocation.selector])
     {
-        NSMethodSignature *aSignature = [anInvocation methodSignature];
-        
-        if ([aSignature numberOfArguments] >= 2) {
-            id firstArg = nil;
-            id firstArgReplacement = nil;
-            
-            // http://stackoverflow.com/questions/2166743/getting-argument-values-from-nsinvocation
-            // Remember that self and _cmd are arguments 0 and 1.
-            [anInvocation getArgument:&firstArg atIndex:2];
-            
-            // Since is a UICollectionView. so we only need to check if the first arg is UIScrollView
-            if ([firstArg isKindOfClass:[UIScrollView class]]) {
-                [anInvocation setArgument:&firstArgReplacement atIndex:2];
-            }
-        }
+        // Forward the call
         [anInvocation invokeWithTarget:self.viewDelegate];
     }
 }
