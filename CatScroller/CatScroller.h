@@ -26,6 +26,16 @@
 
 @optional
 
+/*
+ * Called when setting the selected state
+ */
+- (void)setSelected:(BOOL)selected;
+
+/*
+ * Called when setting highlighted state
+ */
+- (void)setHighlighted:(BOOL)highlighted;
+
 @end
 
 

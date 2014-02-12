@@ -406,7 +406,7 @@
     
     // Does the view delegate responds to the selector ?
     if ([self.viewDelegate respondsToSelector:aSelector]){
-        // I lie and planning to forward the call the the view delegate
+        // I'm lying and planning to forward the call the the view delegate
         return YES;
     }
     return NO;
