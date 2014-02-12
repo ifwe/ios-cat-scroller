@@ -14,8 +14,7 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
-        self.backgroundColor = [UIColor blueColor];
+        
     }
     return self;
 }
@@ -32,6 +31,27 @@
     NSUInteger cellHeight = [dict[CELL_HEIGHT_NAME] integerValue];
     
     self.bounds = CGRectMake(0, 0, 150, cellHeight);
+    
+    CGRect contentFrame = self.contentView.frame;
+    contentFrame.origin.x = 3.0f;
+    contentFrame.origin.y = 3.0f;
+    contentFrame.size.width = 150.0f - 3.0f * 2.0f;
+    contentFrame.size.height = cellHeight - 2.0f * 3.0f;
+    
+    self.contentView.frame = contentFrame;
+    self.contentView.backgroundColor = [UIColor blueColor];
+//    self.contentView.center = self.center;
+    
+    if (!self.backgroundColor){
+        self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
+        self.backgroundView.backgroundColor = [UIColor brownColor];
+    }
+    
+    if (!self.selectedBackgroundView) {
+        self.selectedBackgroundView = [[UIView alloc] initWithFrame:self.bounds];
+        self.selectedBackgroundView.backgroundColor = [UIColor yellowColor];
+    }
+    
     return self;
 }
 
@@ -45,7 +65,11 @@
 - (void)setHighlighted:(BOOL)highlighted
 {
     [super setHighlighted:highlighted];
-    self.backgroundColor = (highlighted)?[UIColor redColor]:[UIColor blueColor];
+}
+
+-(void)prepareForReuse
+{
+    [super prepareForReuse];
 }
 
 @end

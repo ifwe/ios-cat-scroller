@@ -56,6 +56,11 @@
 }
 
 
+- (IBAction)switchToMultiSelection:(UISwitch *)sender forEvent:(UIEvent *)event {
+    self.cat.allowsMultipleSelection = sender.isOn;
+}
+
+
 
 - (CGFloat) CatScrollerItemsWidth{
     return 150.0f;
@@ -84,6 +89,10 @@
 
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    return YES;
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath{
     return YES;
 }
 
