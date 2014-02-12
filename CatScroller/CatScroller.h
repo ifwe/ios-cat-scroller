@@ -140,12 +140,12 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
 
 
 /*
- * View delegate
+ * View Delegate
  */
 @property (weak, nonatomic) id<CatScrollerCollectionViewDelegate> viewDelegate;
 
 /*
- *
+ * Data Source
  */
 @property (weak, nonatomic) id<CatScrollerCollectionViewDataSource> dataSrouce;
 

@@ -374,4 +374,17 @@
 }
 
 
+#pragma mark - Message Forwarding
+
+- (void)forwardInvocation:(NSInvocation *)anInvocation
+{
+    // Check if view delegate conforms to CatScrollerCollectionViewDelegate protocol forward all the call view delegate response to
+    if ([self.viewDelegate conformsToProtocol:@protocol(CatScrollerCollectionViewDelegate)]
+        && [self.viewDelegate respondsToSelector:anInvocation.selector])
+    {
+        [anInvocation invokeWithTarget:self.viewDelegate];
+    }
+}
+
+
 @end
