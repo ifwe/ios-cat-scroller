@@ -247,6 +247,16 @@
     }
 }
 
+- (BOOL)allowsMultipleSelection
+{
+    return self.collectionView.allowsMultipleSelection;
+}
+
+- (void)setAllowsMultipleSelection:(BOOL)allowsMultipleSelection
+{
+    self.collectionView.allowsMultipleSelection = allowsMultipleSelection;
+}
+
 
 #pragma mark - view functions
 
@@ -284,6 +294,21 @@
         if (completion) completion(finished);
     }];
 }
+
+
+
+
+- (void) removeCellInRanges:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion{
+    
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView deleteItemsAtIndexPaths:arrayOfIndices];
+    } completion:^(BOOL finished) {
+        if (completion) completion(finished);
+    }];
+}
+
+
+
 
 - (NSUInteger)findLargestIndexFromVisibleCells {
     __block NSUInteger largestIndex = 0;
@@ -409,7 +434,7 @@
         // I'm lying and planning to forward the call the the view delegate
         return YES;
     }
-    return NO;
+        return NO;
 }
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation

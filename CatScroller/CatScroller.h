@@ -82,6 +82,9 @@
  */
 - (void) CatScrollerDidEnterCriticalRange;
 
+/*
+ * The Critical number of item left in the collection view
+ */
 - (NSUInteger) CatScrollerCriticalRangeItemCount;
 
 @end
@@ -137,6 +140,12 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
 @property (strong, nonatomic) UIRefreshControl * refreshControl;
 
 /*
+ *
+ */
+@property (nonatomic) BOOL allowsMultipleSelection;
+
+
+/*
  * Current data update policy
  * Default: CSDataRequestingPolicyOnDisplayingNewItem
  */
@@ -179,12 +188,18 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
  */
 - (void) updateCollectionViewCellClass:(Class) cellClass;
 
+
+
+
 /*
  * will add data to the internal data array and a completion block
  */
 - (void) pushBackData:(NSArray *) data completion:(void (^)(BOOL finished))completion;
 
-
+/*
+ * Will remove data from the internal data array and a completion block
+ */
+- (void) removeCellInRanges:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion;
 
 
 @end
