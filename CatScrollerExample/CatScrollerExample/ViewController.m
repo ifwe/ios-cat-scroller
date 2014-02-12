@@ -77,4 +77,17 @@
     return 5;
 }
 
+//
+//- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath{
+//    return YES;
+//}
+
+
+//
+//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//{
+//    
+//}
+
+
 @end

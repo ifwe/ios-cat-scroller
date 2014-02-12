@@ -9,6 +9,7 @@
 #import "CatScroller.h"
 #import "CatScrollerDefaultHeaderView.h"
 #import "CatScrollerDefaultFooterView.h"
+#import <objc/runtime.h>
 
 
 
@@ -30,6 +31,12 @@
 - (CGFloat) CatScrollerVerticalItemSpacing{
     return DEFAULT_ITEM_VERTICAL_HEIGHT;
 }
+
+
+// Forwarding defaults
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{}
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{}
+
 
 @end
 
@@ -353,12 +360,18 @@
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     [self notifyDelegateIfReachedCriticalRange:[self findLargestIndexFromVisibleCells] updateFromPolicy:CSDataRequestingPolicyOnViewWillBeginScroll];
+    
+    // Forward the scrollViewWillBeginDragging call
+    [self.viewDelegate scrollViewWillBeginDragging:scrollView];
 }
 
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     [self notifyDelegateIfReachedCriticalRange:[self findLargestIndexFromVisibleCells] updateFromPolicy:CSDataRequestingPolicyOnViewEndScroll];
+    
+    // Forward the scrollViewDidEndDecelerating call
+    [self.viewDelegate scrollViewDidEndDecelerating:scrollView];
 }
 
 #pragma mark - CHTCollectionViewDelegateWaterfallLayout
@@ -376,12 +389,50 @@
 
 #pragma mark - Message Forwarding
 
+
+- (BOOL)respondsToSelector:(SEL)aSelector
+{
+    BOOL result = [super respondsToSelector:aSelector];
+    if (result) {
+        return YES;
+    }
+    
+    // Is it part of UICollectionViewDelegate, UIScrollViewDelegate, NSObject protocol?
+    struct objc_method_description aDescription = protocol_getMethodDescription(@protocol(UICollectionViewDelegate), aSelector, NO, YES);
+    if (aDescription.name == NULL || aDescription.types == NULL) {
+        // Not part of the protocal
+        return NO;
+    }
+    
+    // Does the view delegate responds to the selector ?
+    if ([self.viewDelegate respondsToSelector:aSelector]){
+        // I lie and planning to forward the call the the view delegate
+        return YES;
+    }
+    return NO;
+}
+
 - (void)forwardInvocation:(NSInvocation *)anInvocation
 {
     // Check if view delegate conforms to CatScrollerCollectionViewDelegate protocol forward all the call view delegate response to
     if ([self.viewDelegate conformsToProtocol:@protocol(CatScrollerCollectionViewDelegate)]
         && [self.viewDelegate respondsToSelector:anInvocation.selector])
     {
+        NSMethodSignature *aSignature = [anInvocation methodSignature];
+        
+        if ([aSignature numberOfArguments] >= 2) {
+            id firstArg = nil;
+            id firstArgReplacement = nil;
+            
+            // http://stackoverflow.com/questions/2166743/getting-argument-values-from-nsinvocation
+            // Remember that self and _cmd are arguments 0 and 1.
+            [anInvocation getArgument:&firstArg atIndex:2];
+            
+            // Since is a UICollectionView. so we only need to check if the first arg is UIScrollView
+            if ([firstArg isKindOfClass:[UIScrollView class]]) {
+                [anInvocation setArgument:&firstArgReplacement atIndex:2];
+            }
+        }
         [anInvocation invokeWithTarget:self.viewDelegate];
     }
 }
