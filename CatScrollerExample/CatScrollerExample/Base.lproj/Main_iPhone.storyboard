@@ -37,7 +37,11 @@
                                         </switch>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="OcR-zS-zb5"/>
-                                    <barButtonItem title="Delete" id="X9d-Ed-BGu"/>
+                                    <barButtonItem title="Delete" id="X9d-Ed-BGu">
+                                        <connections>
+                                            <action selector="removeObjectInCollectionView:" destination="vXZ-lx-hvc" id="lDc-Ey-XfD"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <view clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mNl-un-PP7">
@@ -50,6 +54,7 @@
                     </view>
                     <connections>
                         <outlet property="containerView" destination="mNl-un-PP7" id="lFc-ZN-heO"/>
+                        <outlet property="multiSelectionSwitch" destination="Cpn-Ua-2Zx" id="iQE-7y-Lpz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

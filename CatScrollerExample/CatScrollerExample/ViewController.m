@@ -14,6 +14,11 @@
 
 @property (weak, nonatomic) IBOutlet UIView *containerView;
 
+@property (strong , nonatomic) NSMutableArray * selectedIndices;
+
+@property (weak, nonatomic) IBOutlet UISwitch *multiSelectionSwitch;
+
+
 @end
 
 @implementation ViewController
@@ -49,7 +54,13 @@
     return _cat;
 }
 
-
+- (NSMutableArray *)selectedIndices
+{
+    if (!_selectedIndices) {
+        _selectedIndices = [[NSMutableArray alloc] init];
+    }
+    return _selectedIndices;
+}
 
 - (IBAction)addDataToCollection:(UIBarButtonItem *)sender {
     [self.cat pushBackData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] completion:nil];
@@ -60,6 +71,10 @@
     self.cat.allowsMultipleSelection = sender.isOn;
 }
 
+- (IBAction)removeObjectInCollectionView:(UIBarButtonItem *)sender {
+    [self.cat removeCellWithArrayOfIndices:self.selectedIndices completion:nil];
+    [self.selectedIndices removeAllObjects];
+}
 
 
 - (CGFloat) CatScrollerItemsWidth{
@@ -87,13 +102,34 @@
     return YES;
 }
 
-
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    
+    if (!self.multiSelectionSwitch.isOn) {
+        [self.selectedIndices removeAllObjects];
+    }
+    [self.selectedIndices addObject:indexPath];
+    
+    
     return YES;
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath{
+    
+    [self.selectedIndices enumerateObjectsUsingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
+        if ([indexPath compare:obj] == NSOrderedSame)
+        {
+            [self.selectedIndices removeObjectAtIndex:idx];
+            *stop = YES;
+        }
+    }];
+    
     return YES;
+}
+
+
+- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath{
+    
 }
 
 
