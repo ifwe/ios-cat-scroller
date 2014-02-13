@@ -199,7 +199,7 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
 /*
  * Will remove data from the internal data array and a completion block
  */
-- (void) removeCellInRanges:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion;
+- (void) removeCellWithArrayOfIndices:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion;
 
 
 @end

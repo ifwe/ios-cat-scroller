@@ -269,6 +269,11 @@
 
 - (void) pushBackData:(NSArray *) data completion:(void (^)(BOOL finished))completion
 {
+    if (data.count == 0) {
+        self.currentDataRequestState = CSDataRequestingStateNoMoreData;
+        return;
+    }
+    
     // return to normal state only if it's in CSDataRequestingStateWaitingForAddingData
     if (self.currentDataRequestState == CSDataRequestingStateWaitingForAddingData)
     {
@@ -298,7 +303,16 @@
 
 
 
-- (void) removeCellInRanges:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion{
+- (void) removeCellWithArrayOfIndices:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion{
+    
+    if (arrayOfIndices.count == 0) {
+        return;
+    }
+    __block NSMutableIndexSet *aSetOfindices = [[NSMutableIndexSet alloc] init];
+    [arrayOfIndices enumerateObjectsUsingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
+        [aSetOfindices addIndex:obj.row];
+    }];
+    [self.internalData removeObjectsAtIndexes:aSetOfindices];
     
     [self.collectionView performBatchUpdates:^{
         [self.collectionView deleteItemsAtIndexPaths:arrayOfIndices];
@@ -430,7 +444,7 @@
     }
     
     // Does the view delegate responds to the selector ?
-    if ([self.viewDelegate respondsToSelector:aSelector]){
+    if ([self.viewDelegate respondsToSelector:aSelector]) {
         // I'm lying and planning to forward the call the the view delegate
         return YES;
     }
