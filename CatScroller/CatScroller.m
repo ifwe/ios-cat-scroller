@@ -156,7 +156,9 @@
         
         [_collectionView registerClass:[CatScrollerDefaultHeaderView class] forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter withReuseIdentifier:FOOTER_IDENTIFIER];
         
-        _collectionView.backgroundColor = [UIColor lightGrayColor];
+        _collectionView.clipsToBounds = NO;
+        
+        _collectionView.backgroundColor = [UIColor clearColor];
     }
     return _collectionView;
 }
@@ -165,6 +167,7 @@
 {
     if (!_containerView) {
         _containerView = [[UIView alloc] initWithFrame:self.containerFrame];
+        _containerView.clipsToBounds = YES;
     }
     return _containerView;
 }
@@ -172,6 +175,7 @@
 - (UIView *)headerViewContainer
 {
     if (!_headerViewContainer) {
+        
         CGRect headerframe = self.containerView.bounds;
         headerframe.size.height = 0.0f;
         
@@ -179,7 +183,7 @@
         
         _headerViewContainer.clipsToBounds = YES;
         
-        _headerViewContainer.backgroundColor = [UIColor yellowColor];
+        _headerViewContainer.backgroundColor = [UIColor clearColor];
     }
     return _headerViewContainer;
 }
@@ -196,7 +200,7 @@
         
         _footerViewContainer.clipsToBounds = YES;
         
-        _footerViewContainer.backgroundColor = [UIColor yellowColor];
+        _footerViewContainer.backgroundColor = [UIColor clearColor];
         
     }
     return _footerViewContainer;
@@ -343,11 +347,28 @@
 
 - (void)setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion
 {
+    CGRect headerContainerFrame = self.headerViewContainer.frame;
+    headerContainerFrame.size.height = 0.0f;
+    self.headerViewContainer.frame = headerContainerFrame;
     
+    [UIView animateWithDuration:0.1f animations:^{
+        [self setHeaderView:headerView];
+    } completion:^(BOOL finished) {
+        if (completion) completion(finished);
+    }];
 }
 
 - (void) setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion
 {
+    CGRect footerContainerFrame = self.footerViewContainer.frame;
+    footerContainerFrame.origin.y = self.containerView.frame.size.height;
+    self.footerViewContainer.frame = footerContainerFrame;
+    
+    [UIView animateWithDuration:0.2f animations:^{
+        [self setFooterView:footerView];
+    } completion:^(BOOL finished) {
+        if (completion) completion(finished);
+    }];
     
 }
 

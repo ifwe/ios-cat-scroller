@@ -81,18 +81,18 @@
     if (sender.isOn) {
         UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.cat.containerView.frame.size.width, 30)];
         headerView.backgroundColor = [UIColor colorWithWhite:((arc4random()%250) / 250.0f) alpha:1.0f];
-        [self.cat setHeaderView:headerView];
+        [self.cat setHeaderView:headerView withCompletionBlock:nil];
     }else{
-        [self.cat setHeaderView:nil];
+        [self.cat setHeaderView:nil withCompletionBlock:nil];
     }
 }
 - (IBAction)FooterSwitch:(UISwitch *)sender {
     if (sender.isOn) {
         UIView * footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.cat.containerView.frame.size.width, 30)];
         footerView.backgroundColor = [UIColor colorWithWhite:((arc4random()%250) / 250.0f) alpha:1.0f];
-        [self.cat setFooterView:footerView];
+        [self.cat setFooterView:footerView withCompletionBlock:nil];
     }else{
-        [self.cat setFooterView:nil];
+        [self.cat setFooterView:nil withCompletionBlock:nil];
     }
 }
 
