@@ -30,12 +30,12 @@
     
     NSUInteger cellHeight = [dict[CELL_HEIGHT_NAME] integerValue];
     
-    self.bounds = CGRectMake(0, 0, 150, cellHeight);
+    self.bounds = CGRectMake(0, 0, 135.0, cellHeight);
     
     CGRect contentFrame = self.contentView.frame;
     contentFrame.origin.x = 3.0f;
     contentFrame.origin.y = 3.0f;
-    contentFrame.size.width = 150.0f - 3.0f * 2.0f;
+    contentFrame.size.width = 135.0 - 3.0f * 2.0f;
     contentFrame.size.height = cellHeight - 2.0f * 3.0f;
     
     self.contentView.frame = contentFrame;

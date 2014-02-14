@@ -189,6 +189,15 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
 - (void) updateCollectionViewCellClass:(Class) cellClass;
 
 
+/*
+ * For seting header and footer of the Content view with animation
+ *
+ * For Non-animated setting please call setHeaderView: or setFooterView:
+ */
+- (void)setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion;
+
+- (void) setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion;
+
 
 
 /*

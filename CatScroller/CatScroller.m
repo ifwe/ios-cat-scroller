@@ -112,7 +112,7 @@
         [self.containerView addSubview:self.headerViewContainer];
         [self.containerView addSubview:self.footerViewContainer];
         
-        [self setupLayoutConstraint];
+        [self setupLayout];
         
     }
     return self;
@@ -172,10 +172,12 @@
 - (UIView *)headerViewContainer
 {
     if (!_headerViewContainer) {
-        CGRect headerframe = self.containerView.frame;
-        headerframe.size.height = 10.0f;
+        CGRect headerframe = self.containerView.bounds;
+        headerframe.size.height = 0.0f;
         
         _headerViewContainer = [[UIView alloc] initWithFrame:headerframe];
+        
+        _headerViewContainer.clipsToBounds = YES;
         
         _headerViewContainer.backgroundColor = [UIColor yellowColor];
     }
@@ -186,11 +188,13 @@
 {
     if (!_footerViewContainer) {
         
-        CGRect footerViewFrame = self.containerView.frame;
-        footerViewFrame.origin.y = footerViewFrame.size.height - 10.0f;
-        footerViewFrame.size.height = 10.0f;
+        CGRect footerViewFrame = self.containerView.bounds;
+        footerViewFrame.origin.y = footerViewFrame.size.height;
+        footerViewFrame.size.height = 0.0f;
         
         _footerViewContainer = [[UIView alloc] initWithFrame:footerViewFrame];
+        
+        _footerViewContainer.clipsToBounds = YES;
         
         _footerViewContainer.backgroundColor = [UIColor yellowColor];
         
@@ -256,6 +260,97 @@
 {
     self.collectionView.allowsMultipleSelection = allowsMultipleSelection;
 }
+
+
+- (void)setHeaderView:(UIView *)headerView
+{
+    // 4 cases in total:
+    if (_headerView == nil && headerView == nil) {
+        return;
+    } else if (_headerView == nil && headerView != nil) {
+        _headerView = headerView;
+        _headerView.frame = _headerView.bounds;
+        
+        [self.headerViewContainer addSubview:_headerView];
+        
+        [self restoreFramesForHeader:NO];
+        
+    } else if (_headerView != nil && headerView == nil) {
+        
+        [self restoreFramesForHeader:YES];
+        
+        [_headerView removeFromSuperview];
+        
+        _headerView = headerView;
+        
+    } else if (_headerView != nil && headerView != nil){
+        
+        [self restoreFramesForHeader:YES];
+        
+        self.headerViewContainer.bounds = headerView.bounds;
+        
+        [_headerView removeFromSuperview];
+        
+        _headerView = headerView;
+        _headerView.frame = _headerView.bounds;
+        
+        [self.headerViewContainer addSubview:_headerView];
+        
+        [self restoreFramesForHeader:NO];
+    }
+}
+
+
+- (void) setFooterView:(UIView *)footerView
+{
+    // 4 cases in total:
+    if (_footerView == nil && footerView == nil) {
+        return;
+    } else if (_footerView == nil && footerView != nil) {
+        
+        _footerView = footerView;
+        _footerView.frame = footerView.bounds;
+        
+        [self.footerViewContainer addSubview:_footerView];
+        
+        [self restoreFramesForFooter:NO];
+        
+    }else if (_footerView != nil && footerView == nil) {
+        
+        [self restoreFramesForFooter:YES];
+        
+        [_footerView removeFromSuperview];
+        
+        _footerView = footerView;
+        
+    }else if (_footerView != nil && footerView != nil){
+        
+        [self restoreFramesForFooter:YES];
+        
+        [_footerView removeFromSuperview];
+        
+        _footerView = footerView;
+        _footerView.frame = footerView.bounds;
+        
+        [self.footerViewContainer addSubview:_footerView];
+        
+        [self restoreFramesForFooter:NO];
+        
+    }
+
+}
+
+
+- (void)setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion
+{
+    
+}
+
+- (void) setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion
+{
+    
+}
+
 
 
 #pragma mark - view functions
@@ -333,13 +428,13 @@
     return largestIndex;
 }
 
-- (void) setupLayoutConstraint
+- (void) setupLayout
 {
-    self.headerViewContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleBottomMargin;
+    self.headerViewContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     
-    self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     
-    self.footerViewContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    self.footerViewContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
@@ -354,10 +449,50 @@
         
         [self.dataSrouce CatScrollerDidEnterCriticalRange];
         
-    }else if (policy == CSDataRequestingPolicyAlways) {
+    } else if (policy == CSDataRequestingPolicyAlways) {
         [self.dataSrouce CatScrollerDidEnterCriticalRange];
     }
 }
+
+- (void) restoreFramesForHeader: (BOOL) shouldRestore
+{
+    CGFloat oldHeaderHeight = self.headerView.frame.size.height;
+    
+    self.headerViewContainer.frame = (shouldRestore)?CGRectZero:self.headerView.bounds;
+    
+    CGFloat newHeaderHeight = self.headerViewContainer.frame.size.height;
+    
+    CGRect collectionViewFrame = self.collectionView.frame;
+    
+    
+    collectionViewFrame.origin.y = (shouldRestore)?0:oldHeaderHeight;
+    collectionViewFrame.size.height += (shouldRestore)?(oldHeaderHeight):(-1.0f * newHeaderHeight);
+    
+    self.collectionView.frame = collectionViewFrame;
+    
+}
+
+
+- (void) restoreFramesForFooter: (BOOL) shouldRestore
+{
+    CGFloat oldFooterHeight = self.footerViewContainer.frame.size.height;
+    
+    CGRect footerContinerFrame = self.footerView.bounds;
+    CGFloat collectionHeight = self.containerView.frame.size.height;
+    CGFloat footerContinerHeight = (shouldRestore)?0:footerContinerFrame.size.height;
+    CGFloat newYPos = collectionHeight - footerContinerHeight;
+    footerContinerFrame.origin.y = newYPos;
+    self.footerViewContainer.frame = footerContinerFrame;
+    
+    CGFloat newFooterHeight = self.footerViewContainer.frame.size.height;
+    
+    CGRect collectionViewFrame = self.collectionView.frame;
+    
+    collectionViewFrame.size.height += (shouldRestore)?oldFooterHeight:(-1.0f * newFooterHeight);
+    
+    self.collectionView.frame = collectionViewFrame;
+}
+
 
 #pragma mark - UICollectionViewDataSource
 
