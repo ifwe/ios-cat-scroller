@@ -116,9 +116,9 @@
         
         [self updateCollectionViewCellClass:cellClass];
         
-        [self.containerView addSubview:self.overheadViewContainer];
-        [self.containerView addSubview:self.collectionView];
         [self.containerView addSubview:self.backgroundViewContainer];
+        [self.containerView addSubview:self.collectionView];
+        [self.containerView addSubview:self.overheadViewContainer];
         
         [self.containerView addSubview:self.headerViewContainer];
         [self.containerView addSubview:self.footerViewContainer];
@@ -358,6 +358,24 @@
 }
 
 
+- (UIView *)backgroundViewContainer
+{
+    if (!_backgroundViewContainer) {
+        _backgroundViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
+        _backgroundViewContainer.userInteractionEnabled = NO;
+    }
+    return _backgroundViewContainer;
+}
+
+- (UIView *)overheadViewContainer
+{
+    if (!_overheadViewContainer) {
+        _overheadViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
+        _overheadViewContainer.userInteractionEnabled = NO;
+    }
+    return _overheadViewContainer;
+}
+
 - (void) setBackgroundView:(UIView *)backgroundView
 {
     [_backgroundView removeFromSuperview];
@@ -372,23 +390,6 @@
     _overheadView = overheadView;
     [self.overheadViewContainer addSubview:_overheadView];
     [_overheadView setCenter:self.overheadViewContainer.center];
-}
-
-
-- (UIView *)backgroundViewContainer
-{
-    if (!_backgroundViewContainer) {
-        _backgroundViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
-    }
-    return _backgroundViewContainer;
-}
-
-- (UIView *)overheadViewContainer
-{
-    if (!_overheadViewContainer) {
-        _overheadViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
-    }
-    return _overheadViewContainer;
 }
 
 
@@ -436,6 +437,7 @@
 {
     self.backgroundViewContainer.layer.opacity = 0.0f;
     self.overheadViewContainer.layer.opacity = 0.0f;
+    self.overheadViewContainer.userInteractionEnabled = NO;
     
     switch (viewType) {
         case CSAdditionalViewTypeNone:
@@ -448,6 +450,7 @@
         case CSAdditionalViewTypeOverhead:
         {
             self.overheadViewContainer.layer.opacity = 1.0f;
+            self.overheadViewContainer.userInteractionEnabled = YES;
         }
             break;
         default:
@@ -561,8 +564,12 @@
 - (void) restoreFramesForHeader: (BOOL) shouldRestore
 {
     CGFloat oldHeaderHeight = self.headerView.frame.size.height;
+    CGFloat oldHeaderWidth = self.headerView.frame.size.width;
     
-    self.headerViewContainer.frame = (shouldRestore)?CGRectZero:self.headerView.bounds;
+    CGRect newHeaderContainerFrame = CGRectZero;
+    newHeaderContainerFrame.size.width = oldHeaderWidth;
+    
+    self.headerViewContainer.frame = (shouldRestore)?newHeaderContainerFrame:self.headerView.bounds;
     
     CGFloat newHeaderHeight = self.headerViewContainer.frame.size.height;
     
