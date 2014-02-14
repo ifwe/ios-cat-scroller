@@ -22,7 +22,7 @@
  * (OR)
  * - Will call this method if just want to render the height and width
  */
-- (UICollectionViewCell *) render:(id) cellModel ForHeightOrWidth:(BOOL) isRenderingForHeightOrWidth;
+- (UICollectionViewCell *) render:(id) cellModel ForHeightOrWidth:(BOOL) isRenderingForHeight;
 
 @optional
 
@@ -115,7 +115,11 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
 };
 
 
-
+typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
+    CSAdditionalViewTypeNone,           // For disable any visable additional view
+    CSAdditionalViewTypeBackground,     // For enable the background view
+    CSAdditionalViewTypeOverhead        // For enable the overhead view
+};
 
 
 
@@ -132,6 +136,15 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
 @property (strong, nonatomic) UIView *headerView;
 @property (strong, nonatomic) UIView *footerView;
 
+/*
+ * overheadView will be added in front of the collection view and centered
+ */
+@property (strong, nonatomic) UIView *overheadView;
+
+/*
+ * backgroundView will be added behind of the collection view and centered
+ */
+@property (strong, nonatomic) UIView *backgroundView;
 
 /*
  * Collection view refresh control
@@ -194,9 +207,21 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
  *
  * For Non-animated setting please call setHeaderView: or setFooterView:
  */
-- (void)setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion;
+- (void) setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion;
 
 - (void) setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion;
+
+/*
+ * set additional view's visibility
+ */
+- (void) setVisableAdditionalViewForType:(CSAdditionalViewType) viewType;
+
+
+/*
+ * set additional view's visibility with animation
+ */
+
+- (void) setVisableAdditionalViewForType:(CSAdditionalViewType) viewType withCompletionBlock:(void (^)(BOOL finished))completion;
 
 
 

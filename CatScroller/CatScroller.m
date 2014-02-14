@@ -56,8 +56,18 @@
 /*
  * The view that contain the the header view or footer view
  */
-@property (strong, nonatomic, readonly) UIView *headerViewContainer;
-@property (strong, nonatomic, readonly) UIView *footerViewContainer;
+@property (strong, nonatomic) UIView *headerViewContainer;
+@property (strong, nonatomic) UIView *footerViewContainer;
+
+/*
+ * View container that's in front of the UICollectionView
+ */
+@property (strong, nonatomic) UIView * overheadViewContainer;
+
+/*
+ * View container that's behind the UICollectionView
+ */
+@property (strong, nonatomic) UIView * backgroundViewContainer;
 
 /*
  * The data, user supplies for the table's contain
@@ -106,8 +116,9 @@
         
         [self updateCollectionViewCellClass:cellClass];
         
+        [self.containerView addSubview:self.overheadViewContainer];
         [self.containerView addSubview:self.collectionView];
-        
+        [self.containerView addSubview:self.backgroundViewContainer];
         
         [self.containerView addSubview:self.headerViewContainer];
         [self.containerView addSubview:self.footerViewContainer];
@@ -157,6 +168,9 @@
         [_collectionView registerClass:[CatScrollerDefaultHeaderView class] forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter withReuseIdentifier:FOOTER_IDENTIFIER];
         
         _collectionView.clipsToBounds = NO;
+        
+        // added Key value observing
+        [self.collectionView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
         
         _collectionView.backgroundColor = [UIColor clearColor];
     }
@@ -341,7 +355,50 @@
         [self restoreFramesForFooter:NO];
         
     }
+}
 
+
+- (void) setBackgroundView:(UIView *)backgroundView
+{
+    [_backgroundView removeFromSuperview];
+    _backgroundView = backgroundView;
+    [self.backgroundViewContainer addSubview:_backgroundView];
+    [_backgroundView setCenter:self.backgroundViewContainer.center];
+}
+
+- (void)setOverheadView:(UIView *)overheadView
+{
+    [_overheadView removeFromSuperview];
+    _overheadView = overheadView;
+    [self.overheadViewContainer addSubview:_overheadView];
+    [_overheadView setCenter:self.overheadViewContainer.center];
+}
+
+
+- (UIView *)backgroundViewContainer
+{
+    if (!_backgroundViewContainer) {
+        _backgroundViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
+    }
+    return _backgroundViewContainer;
+}
+
+- (UIView *)overheadViewContainer
+{
+    if (!_overheadViewContainer) {
+        _overheadViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
+    }
+    return _overheadViewContainer;
+}
+
+
+#pragma mark - view functions
+
+- (void)updateCollectionViewCellClass:(Class)cellClass
+{
+    assert([cellClass conformsToProtocol:@protocol(CatScrollerCollectionViewCell)]);
+    self.collectionViewCellClass = cellClass;
+    
 }
 
 
@@ -358,6 +415,8 @@
     }];
 }
 
+
+
 - (void) setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion
 {
     CGRect footerContainerFrame = self.footerViewContainer.frame;
@@ -373,15 +432,39 @@
 }
 
 
-
-#pragma mark - view functions
-
-- (void)updateCollectionViewCellClass:(Class)cellClass
+- (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType
 {
-    assert([cellClass conformsToProtocol:@protocol(CatScrollerCollectionViewCell)]);
-    self.collectionViewCellClass = cellClass;
+    self.backgroundViewContainer.layer.opacity = 0.0f;
+    self.overheadViewContainer.layer.opacity = 0.0f;
     
+    switch (viewType) {
+        case CSAdditionalViewTypeNone:
+            break;
+        case CSAdditionalViewTypeBackground:
+        {
+            self.backgroundViewContainer.layer.opacity = 1.0f;
+        }
+            break;
+        case CSAdditionalViewTypeOverhead:
+        {
+            self.overheadViewContainer.layer.opacity = 1.0f;
+        }
+            break;
+        default:
+            break;
+    }
 }
+
+- (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType withCompletionBlock:(void (^)(BOOL))completion
+{
+    [UIView animateWithDuration:0.2f animations:^{
+        [self setVisableAdditionalViewForType:viewType];
+    } completion:^(BOOL finished) {
+        if (completion) completion(finished);
+    }];
+}
+
+
 
 - (void) pushBackData:(NSArray *) data completion:(void (^)(BOOL finished))completion
 {
@@ -615,6 +698,22 @@
     {
         // Forward the call
         [anInvocation invokeWithTarget:self.viewDelegate];
+    }
+}
+
+
+
+#pragma mark - NSKeyValueObserving 
+// For setting background and overhead view
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if (self.overheadViewContainer.layer.opacity == 1.0f) {
+        self.overheadViewContainer.frame = self.collectionView.frame;
+    }
+    
+    if (self.backgroundViewContainer.layer.opacity == 1.0f) {
+        self.backgroundViewContainer.frame = self.collectionView.frame;
     }
 }
 
