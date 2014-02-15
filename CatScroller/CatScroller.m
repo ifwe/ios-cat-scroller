@@ -361,8 +361,9 @@
 - (UIView *)backgroundViewContainer
 {
     if (!_backgroundViewContainer) {
-        _backgroundViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
+        _backgroundViewContainer = [[UIView alloc] initWithFrame:self.collectionView.frame];
         _backgroundViewContainer.userInteractionEnabled = NO;
+        _backgroundViewContainer.layer.opacity = 0.0f;
     }
     return _backgroundViewContainer;
 }
@@ -370,7 +371,10 @@
 - (UIView *)overheadViewContainer
 {
     if (!_overheadViewContainer) {
-        _overheadViewContainer = [[UIView alloc] initWithFrame:CGRectZero];
+        _overheadViewContainer = [[UIView alloc] initWithFrame:self.collectionView.frame];
+        
+        _overheadViewContainer.layer.opacity = 0.0f;
+        _overheadViewContainer.backgroundColor = [UIColor colorWithWhite:0.2 alpha:0.3f];
         _overheadViewContainer.userInteractionEnabled = NO;
     }
     return _overheadViewContainer;
@@ -435,21 +439,23 @@
 
 - (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType
 {
-    self.backgroundViewContainer.layer.opacity = 0.0f;
-    self.overheadViewContainer.layer.opacity = 0.0f;
     self.overheadViewContainer.userInteractionEnabled = NO;
     
     switch (viewType) {
         case CSAdditionalViewTypeNone:
+        {
+            self.backgroundViewContainer.layer.opacity = 0.0f;
+            self.overheadViewContainer.layer.opacity = 0.0f;
+        }
             break;
         case CSAdditionalViewTypeBackground:
         {
-            self.backgroundViewContainer.layer.opacity = 1.0f;
+            self.backgroundViewContainer.layer.opacity = (self.backgroundViewContainer.layer.opacity == 1.0f)?0.0f:1.0f;
         }
             break;
         case CSAdditionalViewTypeOverhead:
         {
-            self.overheadViewContainer.layer.opacity = 1.0f;
+            self.overheadViewContainer.layer.opacity = (self.overheadViewContainer.layer.opacity == 1.0f)?0.0f:1.0f;
             self.overheadViewContainer.userInteractionEnabled = YES;
         }
             break;
@@ -715,13 +721,8 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if (self.overheadViewContainer.layer.opacity == 1.0f) {
-        self.overheadViewContainer.frame = self.collectionView.frame;
-    }
-    
-    if (self.backgroundViewContainer.layer.opacity == 1.0f) {
-        self.backgroundViewContainer.frame = self.collectionView.frame;
-    }
+    self.overheadViewContainer.frame = self.collectionView.frame;
+    self.backgroundViewContainer.frame = self.collectionView.frame;
 }
 
 
