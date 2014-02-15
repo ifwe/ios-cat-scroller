@@ -45,6 +45,17 @@
                           withCollectionCellClass:[CatScrollerCell class] withDelegate:self];
         _cat.dataSrouce = self;
         
+        UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.containerView.frame.size.width, self.containerView.frame.size.height)];
+        backgroundView.backgroundColor = [UIColor magentaColor];
+        
+        _cat.backgroundView = backgroundView;
+        
+        
+        UIView * overHeadView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50.0f, 50.0f)];
+        overHeadView.backgroundColor = [UIColor purpleColor];
+        
+        _cat.overheadView = overHeadView;
+        
         UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
         refreshControl.tintColor = [UIColor grayColor];
         [refreshControl addTarget:self action:@selector(refershControlAction:) forControlEvents:UIControlEventValueChanged];
@@ -95,6 +106,18 @@
         [self.cat setFooterView:nil withCompletionBlock:nil];
     }
 }
+
+- (IBAction)forGround:(UISwitch *)sender {
+    [self.cat setVisableAdditionalViewForType:CSAdditionalViewTypeOverhead withCompletionBlock:nil];
+}
+
+
+- (IBAction)background:(UISwitch *)sender {
+    [self.cat setVisableAdditionalViewForType:CSAdditionalViewTypeBackground withCompletionBlock:nil];
+}
+
+
+
 
 - (CGFloat) CatScrollerItemsWidth{
     return 135.0f;
