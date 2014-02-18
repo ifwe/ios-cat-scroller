@@ -138,8 +138,7 @@
 - (void) CatScrollerDidEnterCriticalRange
 {
     if (self.autoAddSwitch.isOn) {
-        [self addTwoRandomCells];
-        CGFloat randomSecond = arc4random()%10 +12.0f;
+        CGFloat randomSecond = arc4random()%5 +1.0f;
         [self performSelector:@selector(addTwoRandomCells) withObject:nil afterDelay:randomSecond];
         if (!self.cat.endOfDataFooter) {
             UIActivityIndicatorView *endOfDataView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
