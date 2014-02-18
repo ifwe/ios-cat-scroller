@@ -115,7 +115,7 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
 };
 
 /*
- * View type will be show when call on setVisableAdditionalViewForType:
+ * View type of view will be show when call on setVisableAdditionalViewForType:
  */
 typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
     CSAdditionalViewTypeNone,                           // Disable any visable additional view
@@ -255,6 +255,11 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  * Will remove data from the internal data array and a completion block
  */
 - (void) removeCellWithArrayOfIndices:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion;
+
+/*
+ * get array of selected index paths
+ */
+- (NSArray *) indexPathsForSelectedItems; // returns nil or an array of selected index paths
 
 
 @end

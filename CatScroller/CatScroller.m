@@ -644,6 +644,12 @@
 }
 
 
+- (NSArray *)indexPathsForSelectedItems
+{
+    return [self.collectionView indexPathsForSelectedItems];
+}
+
+
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
