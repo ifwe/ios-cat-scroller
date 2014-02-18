@@ -138,10 +138,13 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 @interface CatScroller : NSObject
 
 /*
- * The container that contains the functionality of the project
+ * The container that contains the functionality of the object
  */
 @property (strong, nonatomic, readonly) UIView *containerView;
 
+/*
+ * updates the collection view's column count
+ */
 @property (nonatomic) NSUInteger columnCount;
 
 /*

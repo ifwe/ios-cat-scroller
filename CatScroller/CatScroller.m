@@ -747,6 +747,10 @@
                                                   withReuseIdentifier:FOOTER_IDENTIFIER
                                                          forIndexPath:indexPath];
         self.endOfDataFooterContainer = reusableView;
+        self.endOfDataFooterContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        if (self.endOfDataFooter) {
+            [self updateDateEndOfDataFooterView];
+        }
     }
     return reusableView;
 }
