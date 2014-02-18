@@ -88,6 +88,8 @@
 @property (strong, nonatomic) Class collectionViewHeaderViewClass;
 @property (strong, nonatomic) Class collectionViewFooterViewClass;
 
+@property (weak, nonatomic) UICollectionReusableView *endOfDataFooterContainer;
+
 
 @end
 
@@ -236,6 +238,10 @@
     return _internalData;
 }
 
+- (NSArray *)data
+{
+    return _internalData;
+}
 
 - (Class)collectionViewHeaderViewClass
 {
@@ -404,6 +410,17 @@
     [_overheadView setCenter:self.overheadViewContainer.center];
 }
 
+- (void)setEndOfDataFooter:(UIView *)endOfDataFooter
+{
+    [_endOfDataFooter removeFromSuperview];
+    _endOfDataFooter = endOfDataFooter;
+    
+    if (self.footerViewContainer) {
+        [self updateDateEndOfDataFooterView];
+        [self.endOfDataFooterContainer addSubview:_endOfDataFooter];
+    }
+}
+
 
 #pragma mark - view functions
 
@@ -488,6 +505,21 @@
         {
             self.overheadViewContainer.layer.opacity = 0.0f;
             self.overheadViewContainer.userInteractionEnabled = NO;
+        }
+            break;
+        case CSAdditionalViewTypeEndOfDataFooter:
+        {
+            
+        }
+            break;
+        case CSAdditionalViewTypeEndOfDataFooterOn:
+        {
+            
+        }
+            break;
+        case CSAdditionalViewTypeEndOfDAtaFooterOff:
+        {
+            
         }
             break;
         default:
@@ -650,6 +682,27 @@
 }
 
 
+- (void) updateDateEndOfDataFooterView
+{
+    // End of data footer container is empty. We are done.
+    if (!self.endOfDataFooterContainer) {
+        return;
+    }
+    // Footer is not set yet. We are done as well
+    if (!self.footerView) {
+        return;
+    }
+    // otherwise update to footerView's size;
+    CGFloat fHeight = self.footerView.frame.size.height;
+    
+    CGRect footerViewContainerFrame = self.footerViewContainer.frame;
+    footerViewContainerFrame.size.height = fHeight;
+    self.footerViewContainer.frame = footerViewContainerFrame;
+    
+    self.footerView.frame = self.footerView.bounds;
+    
+}
+
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
@@ -681,6 +734,13 @@
         reusableView = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind
                                                   withReuseIdentifier:FOOTER_IDENTIFIER
                                                          forIndexPath:indexPath];
+        self.endOfDataFooterContainer = reusableView;
+        if (self.endOfDataFooter) {
+            if (self.endOfDataFooter) {
+                [self updateDateEndOfDataFooterView];
+                [self.endOfDataFooterContainer addSubview:self.endOfDataFooter];
+            }
+        }
     }
     return reusableView;
 }

@@ -124,7 +124,10 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
     CSAdditionalViewTypeBackgroundOff,                  // Hide the background view
     CSAdditionalViewTypeOverhead,                       // toggle the overhead view visibility
     CSAdditionalViewTypeOverheadOn,                     // Set visible the overhead view
-    CSAdditionalViewTypeOverheadOff                     // Hide the overhead view
+    CSAdditionalViewTypeOverheadOff,                    // Hide the overhead view
+    CSAdditionalViewTypeEndOfDataFooter,                // toggle the end of data footer visibility
+    CSAdditionalViewTypeEndOfDataFooterOn,              // set visible the end of data footer
+    CSAdditionalViewTypeEndOfDAtaFooterOff              // hide the end of data footer
 };
 
 
@@ -143,6 +146,11 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 @property (strong, nonatomic, readonly) UIView *containerView;
 
 /*
+ * The data, user supplies for the table's contain
+ */
+@property (strong, readonly) NSArray *data;
+
+/*
  * headerView footerView will be added to the view as a header or footer
  */
 @property (strong, nonatomic) UIView *headerView;
@@ -157,6 +165,11 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  * backgroundView will be added behind of the collection view and centered
  */
 @property (strong, nonatomic) UIView *backgroundView;
+
+/*
+ * will appear after all the ui collection view cell
+ */
+@property (strong, nonatomic) UIView *endOfDataFooter;
 
 /*
  * Collection view refresh control
