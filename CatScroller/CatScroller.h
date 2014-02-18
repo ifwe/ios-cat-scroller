@@ -142,6 +142,8 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  */
 @property (strong, nonatomic, readonly) UIView *containerView;
 
+@property (nonatomic) NSUInteger columnCount;
+
 /*
  * The data, user supplies for the table's contain
  */

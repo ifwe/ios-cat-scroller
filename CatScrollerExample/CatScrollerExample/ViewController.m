@@ -37,6 +37,26 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (BOOL)shouldAutorotate{
+    return YES;
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    switch (toInterfaceOrientation) {
+        case UIInterfaceOrientationPortrait:
+        case UIInterfaceOrientationPortraitUpsideDown:
+            self.cat.columnCount = 2;
+            break;
+        case UIInterfaceOrientationLandscapeLeft:
+        case UIInterfaceOrientationLandscapeRight:
+            self.cat.columnCount = 3;
+            break;
+        default:
+            break;
+    }
+}
+
 - (CatScroller *)cat
 {
     if (!_cat) {
@@ -124,6 +144,10 @@
     [self.cat pushBackData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] completion:nil];
 }
 
+
+#pragma mark - delegate & data source methods
+
+
 - (void) CatScrollerDidEnterCriticalRange
 {
     if (self.autoAddSwitch.isOn) {
@@ -158,11 +182,6 @@
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath{
     return YES;
-}
-
-
-- (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath{
-    
 }
 
 @end

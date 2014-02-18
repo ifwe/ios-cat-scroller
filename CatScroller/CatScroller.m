@@ -421,6 +421,19 @@
     }
 }
 
+- (void)setColumnCount:(NSUInteger)columnCount
+{
+    if (_columnCount == columnCount) {
+        return;
+    }
+    if ([_collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
+        
+        _columnCount = columnCount;
+        
+        ((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout).columnCount = columnCount;
+        [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) invalidateLayout];
+    }
+}
 
 #pragma mark - view functions
 
@@ -669,7 +682,10 @@
 
 - (void) updateDateEndOfDataFooterView
 {
-    [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) setFooterHeight:0.0f];
+    
+    if ([_collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
+        [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) setFooterHeight:0.0f];
+    }
     
     // End of data footer container is empty. We are done.
     if (!self.endOfDataFooterContainer) {
@@ -681,7 +697,6 @@
     }
     // otherwise update to footerView's size;
     CGFloat fHeight = self.endOfDataFooter.frame.size.height;
-    
     
     if ([_collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
         [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) setFooterHeight:fHeight];
