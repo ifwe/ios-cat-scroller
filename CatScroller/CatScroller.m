@@ -462,10 +462,32 @@
             self.backgroundViewContainer.layer.opacity = (self.backgroundViewContainer.layer.opacity == 1.0f)?0.0f:1.0f;
         }
             break;
+        case CSAdditionalViewTypeBackgroundOn:
+        {
+            self.backgroundViewContainer.layer.opacity = 1.0f;
+        }
+            break;
+        case CSAdditionalViewTypeBackgroundOff:
+        {
+            self.backgroundViewContainer.layer.opacity = 0.0f;
+        }
+            break;
         case CSAdditionalViewTypeOverhead:
         {
             self.overheadViewContainer.layer.opacity = (self.overheadViewContainer.layer.opacity == 1.0f)?0.0f:1.0f;
+            self.overheadViewContainer.userInteractionEnabled = (self.overheadViewContainer.userInteractionEnabled)?NO:YES;
+        }
+            break;
+        case CSAdditionalViewTypeOverheadOn:
+        {
+            self.overheadViewContainer.layer.opacity = 1.0f;
             self.overheadViewContainer.userInteractionEnabled = YES;
+        }
+            break;
+        case CSAdditionalViewTypeOverheadOff:
+        {
+            self.overheadViewContainer.layer.opacity = 0.0f;
+            self.overheadViewContainer.userInteractionEnabled = NO;
         }
             break;
         default:

@@ -118,9 +118,13 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
  * View type will be show when call on setVisableAdditionalViewForType:
  */
 typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
-    CSAdditionalViewTypeNone,           // For disable any visable additional view
-    CSAdditionalViewTypeBackground,     // For enable the background view
-    CSAdditionalViewTypeOverhead        // For enable the overhead view
+    CSAdditionalViewTypeNone,                           // Disable any visable additional view
+    CSAdditionalViewTypeBackground,                     // Toggle the background view visibility
+    CSAdditionalViewTypeBackgroundOn,                   // Set visible the background view
+    CSAdditionalViewTypeBackgroundOff,                  // Hide the background view
+    CSAdditionalViewTypeOverhead,                       // toggle the overhead view visibility
+    CSAdditionalViewTypeOverheadOn,                     // Set visible the overhead view
+    CSAdditionalViewTypeOverheadOff                     // Hide the overhead view
 };
 
 
