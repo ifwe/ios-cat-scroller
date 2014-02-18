@@ -238,7 +238,6 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 /*
  * set additional view's visibility with animation
  */
-
 - (void) setVisableAdditionalViewForType:(CSAdditionalViewType) viewType withCompletionBlock:(void (^)(BOOL finished))completion;
 
 

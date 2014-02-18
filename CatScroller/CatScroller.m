@@ -412,6 +412,7 @@
     assert([cellClass conformsToProtocol:@protocol(CatScrollerCollectionViewCell)]);
     self.collectionViewCellClass = cellClass;
     
+    [self.collectionView reloadData];
 }
 
 
