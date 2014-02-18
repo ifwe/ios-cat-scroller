@@ -11,7 +11,7 @@ Infinite ```UICollectionView``` with automatic view data binding and additional 
 
 ![Demo2]
 ![Demo3]
-[Demo1]
+<!-- [Demo1] -->
 
 Example
 =======
@@ -83,7 +83,7 @@ and voting stack view require the client to implement some 2 [protocols] with 5 
 [example]:https://github.com/tagged/ios-cat-scroller/blob/master/CatScrollerExample/CatScrollerExample/ViewController.m#L40
 [protocols]:https://github.com/tagged/ios-cat-scroller/blob/master/CatScroller/CatScroller.h#L58
 [CatScrollerCollectionViewCell]:https://github.com/tagged/ios-cat-scroller/blob/master/CatScroller/CatScroller.h#L25
-[Demo1]:https://s3.amazonaws.com/uploads.hipchat.com/30/602337/YYsMUvoKYRXZ5FF/additionalView.gif
+<!-- [Demo1]:https://s3.amazonaws.com/uploads.hipchat.com/30/602337/YYsMUvoKYRXZ5FF/additionalView.gif -->
 [Demo2]:https://s3.amazonaws.com/uploads.hipchat.com/30/602337/VWRuJ6QNDi0b8HN/autoAdd390.gif
 [Demo3]:https://s3.amazonaws.com/uploads.hipchat.com/30/602337/Ku82FS41h2zLBPz/multiDeletion390.gif
 <!-- [Creating a Static Library in iOS Tutorial]:http://www.raywenderlich.com/41377/creating-a-static-library-in-ios-tutorial -->
