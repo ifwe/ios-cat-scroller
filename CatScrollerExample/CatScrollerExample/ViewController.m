@@ -18,6 +18,7 @@
 
 @property (weak, nonatomic) IBOutlet UISwitch *multiSelectionSwitch;
 
+@property (weak, nonatomic) IBOutlet UISwitch *autoAddSwitch;
 
 @end
 
@@ -129,9 +130,24 @@
 
 
 
+- (void)addTwoRandomCells
+{
+    [self.cat pushBackData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] completion:nil];
+}
+
 - (void) CatScrollerDidEnterCriticalRange
 {
-    [[[UIAlertView alloc] initWithTitle:@"I'm hungry for more data" message:@"" delegate:nil cancelButtonTitle:@"Data!" otherButtonTitles:nil] show];
+    if (self.autoAddSwitch.isOn) {
+        [self addTwoRandomCells];
+        CGFloat randomSecond = arc4random()%10 +12.0f;
+        [self performSelector:@selector(addTwoRandomCells) withObject:nil afterDelay:randomSecond];
+        if (!self.cat.endOfDataFooter) {
+            UIActivityIndicatorView *endOfDataView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            self.cat.endOfDataFooter = endOfDataView;
+        }
+    }else{
+        [[[UIAlertView alloc] initWithTitle:@"I'm hungry for more data" message:@"" delegate:nil cancelButtonTitle:@"Data!" otherButtonTitles:nil] show];
+    }
 }
 
 - (NSUInteger) CatScrollerCriticalRangeItemCount
