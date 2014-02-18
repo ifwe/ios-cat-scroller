@@ -141,11 +141,15 @@
         CGFloat randomSecond = arc4random()%5 +1.0f;
         [self performSelector:@selector(addTwoRandomCells) withObject:nil afterDelay:randomSecond];
         if (!self.cat.endOfDataFooter) {
-            UIActivityIndicatorView *endOfDataView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            UIActivityIndicatorView *endOfDataView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            endOfDataView.hidesWhenStopped = NO;
+            [endOfDataView startAnimating];
+            endOfDataView.backgroundColor = [UIColor redColor];
             self.cat.endOfDataFooter = endOfDataView;
         }
     }else{
         [[[UIAlertView alloc] initWithTitle:@"I'm hungry for more data" message:@"" delegate:nil cancelButtonTitle:@"Data!" otherButtonTitles:nil] show];
+        self.cat.endOfDataFooter = nil;
     }
 }
 
@@ -188,13 +192,5 @@
 - (void)collectionView:(UICollectionView *)collectionView didUnhighlightItemAtIndexPath:(NSIndexPath *)indexPath{
     
 }
-
-
-//
-//- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-//{
-//    
-//}
-
 
 @end

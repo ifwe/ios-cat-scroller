@@ -125,9 +125,6 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
     CSAdditionalViewTypeOverhead,                       // toggle the overhead view visibility
     CSAdditionalViewTypeOverheadOn,                     // Set visible the overhead view
     CSAdditionalViewTypeOverheadOff,                    // Hide the overhead view
-    CSAdditionalViewTypeEndOfDataFooter,                // toggle the end of data footer visibility
-    CSAdditionalViewTypeEndOfDataFooterOn,              // set visible the end of data footer
-    CSAdditionalViewTypeEndOfDAtaFooterOff              // hide the end of data footer
 };
 
 

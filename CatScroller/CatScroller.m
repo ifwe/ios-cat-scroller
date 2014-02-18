@@ -153,7 +153,7 @@
         layout.sectionInset = [self.viewDelegate CatScrollerSectionInset];
         layout.verticalItemSpacing = [self.viewDelegate CatScrollerVerticalItemSpacing];
         layout.itemWidth = [self.viewDelegate CatScrollerItemsWidth];
-        
+        layout.footerHeight = 0.0f;
         
         
         CGRect collectionFrame = self.containerView.frame;
@@ -175,7 +175,7 @@
         
         [_collectionView registerClass:[CatScrollerDefaultHeaderView class] forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader withReuseIdentifier:HEADER_IDENTIFIER];
         
-        [_collectionView registerClass:[CatScrollerDefaultHeaderView class] forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter withReuseIdentifier:FOOTER_IDENTIFIER];
+        [_collectionView registerClass:[CatScrollerDefaultFooterView class] forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter withReuseIdentifier:FOOTER_IDENTIFIER];
         
         _collectionView.clipsToBounds = NO;
         
@@ -415,7 +415,7 @@
     [_endOfDataFooter removeFromSuperview];
     _endOfDataFooter = endOfDataFooter;
     
-    if (self.footerViewContainer) {
+    if (self.endOfDataFooterContainer) {
         [self updateDateEndOfDataFooterView];
         [self.endOfDataFooterContainer addSubview:_endOfDataFooter];
     }
@@ -505,21 +505,6 @@
         {
             self.overheadViewContainer.layer.opacity = 0.0f;
             self.overheadViewContainer.userInteractionEnabled = NO;
-        }
-            break;
-        case CSAdditionalViewTypeEndOfDataFooter:
-        {
-            
-        }
-            break;
-        case CSAdditionalViewTypeEndOfDataFooterOn:
-        {
-            
-        }
-            break;
-        case CSAdditionalViewTypeEndOfDAtaFooterOff:
-        {
-            
         }
             break;
         default:
@@ -684,22 +669,34 @@
 
 - (void) updateDateEndOfDataFooterView
 {
+    [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) setFooterHeight:0.0f];
+    
     // End of data footer container is empty. We are done.
     if (!self.endOfDataFooterContainer) {
         return;
     }
     // Footer is not set yet. We are done as well
-    if (!self.footerView) {
+    if (!self.endOfDataFooter) {
         return;
     }
     // otherwise update to footerView's size;
-    CGFloat fHeight = self.footerView.frame.size.height;
+    CGFloat fHeight = self.endOfDataFooter.frame.size.height;
     
-    CGRect footerViewContainerFrame = self.footerViewContainer.frame;
+    
+    if ([_collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
+        [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) setFooterHeight:fHeight];
+    }
+    
+    CGRect footerViewContainerFrame = self.endOfDataFooterContainer.frame;
     footerViewContainerFrame.size.height = fHeight;
-    self.footerViewContainer.frame = footerViewContainerFrame;
+    self.endOfDataFooterContainer.frame = footerViewContainerFrame;
     
-    self.footerView.frame = self.footerView.bounds;
+    self.endOfDataFooter.frame = self.endOfDataFooter.bounds;
+    
+    CGPoint centerOnX = self.endOfDataFooterContainer.center;
+    centerOnX.y = self.endOfDataFooter.center.y;
+    self.endOfDataFooter.center = centerOnX;
+    
     
 }
 
@@ -735,12 +732,6 @@
                                                   withReuseIdentifier:FOOTER_IDENTIFIER
                                                          forIndexPath:indexPath];
         self.endOfDataFooterContainer = reusableView;
-        if (self.endOfDataFooter) {
-            if (self.endOfDataFooter) {
-                [self updateDateEndOfDataFooterView];
-                [self.endOfDataFooterContainer addSubview:self.endOfDataFooter];
-            }
-        }
     }
     return reusableView;
 }
