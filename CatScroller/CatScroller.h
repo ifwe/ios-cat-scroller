@@ -114,12 +114,20 @@ typedef NS_OPTIONS(NSUInteger, CSDataRequestingState) { // When in Critical Rang
     CSDataRequestingStateNoMoreData                     // Suppress any notification to the delegate
 };
 
-
+/*
+ * View type will be show when call on setVisableAdditionalViewForType:
+ */
 typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
     CSAdditionalViewTypeNone,           // For disable any visable additional view
     CSAdditionalViewTypeBackground,     // For enable the background view
     CSAdditionalViewTypeOverhead        // For enable the overhead view
 };
+
+
+
+
+
+
 
 
 
@@ -153,7 +161,7 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 @property (strong, nonatomic) UIRefreshControl * refreshControl;
 
 /*
- *
+ * enable multiple selection on ui collection view
  */
 @property (nonatomic) BOOL allowsMultipleSelection;
 
@@ -170,6 +178,15 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  */
 @property (nonatomic) CSDataRequestingState currentDataRequestState;
 
+/*
+ * set the overall animation speed of header and footer speed
+ */
+@property (nonatomic) CGFloat headerFooterAnimationSpeed;
+
+/*
+ * set the over all animation speed of overhead and background animation speed
+ */
+@property (nonatomic) CGFloat additionalViewAnimationSpeed;
 
 /*
  * View Delegate
@@ -180,6 +197,7 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  * Data Source
  */
 @property (weak, nonatomic) id<CatScrollerCollectionViewDataSource> dataSrouce;
+
 
 
 /*

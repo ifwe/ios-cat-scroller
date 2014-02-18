@@ -19,6 +19,8 @@
 #define DEFAULT_SECTION_INSET (UIEdgeInsetsMake(9, 9, 9, 9))
 #define DEFAULT_ITEM_VERTICAL_HEIGHT (5.0f)
 
+#define DEFAULT_HEADER_FOOTER_ANIMATION_SPEED (0.1f)
+#define DEFAULT_OVERHEAD_BACKGROUND_ANIMATION_SPEED (0.1f)
 
 @implementation NSObject (CatScroller)
 
@@ -104,15 +106,13 @@
     return [[[self class] alloc] initWithFrame:frame withCollectionCellClass:cellClass withDelegate:delegate];
 }
 
-
 - (id) initWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>)delegate
 {
     if (self = [super init]) {
         _containerFrame = frame;
         _viewDelegate = delegate;
         
-        _currentDataRequestState = CSDataRequestingStateWaitingForAddingData;
-        _currentDataUpdatePloicy = CSDataRequestingPolicyOnDisplayingNewItem;
+        [self valueInit];
         
         [self updateCollectionViewCellClass:cellClass];
         
@@ -130,6 +130,14 @@
 }
 
 
+- (void)valueInit
+{
+    _currentDataRequestState = CSDataRequestingStateWaitingForAddingData;
+    _currentDataUpdatePloicy = CSDataRequestingPolicyOnDisplayingNewItem;
+    
+    _headerFooterAnimationSpeed = DEFAULT_HEADER_FOOTER_ANIMATION_SPEED;
+    _additionalViewAnimationSpeed = DEFAULT_OVERHEAD_BACKGROUND_ANIMATION_SPEED;
+}
 
 
 #pragma mark - getter & setter
@@ -413,7 +421,7 @@
     headerContainerFrame.size.height = 0.0f;
     self.headerViewContainer.frame = headerContainerFrame;
     
-    [UIView animateWithDuration:0.1f animations:^{
+    [UIView animateWithDuration:self.headerFooterAnimationSpeed animations:^{
         [self setHeaderView:headerView];
     } completion:^(BOOL finished) {
         if (completion) completion(finished);
@@ -428,7 +436,7 @@
     footerContainerFrame.origin.y = self.containerView.frame.size.height;
     self.footerViewContainer.frame = footerContainerFrame;
     
-    [UIView animateWithDuration:0.2f animations:^{
+    [UIView animateWithDuration:self.headerFooterAnimationSpeed animations:^{
         [self setFooterView:footerView];
     } completion:^(BOOL finished) {
         if (completion) completion(finished);
@@ -466,7 +474,7 @@
 
 - (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType withCompletionBlock:(void (^)(BOOL))completion
 {
-    [UIView animateWithDuration:0.2f animations:^{
+    [UIView animateWithDuration:self.additionalViewAnimationSpeed animations:^{
         [self setVisableAdditionalViewForType:viewType];
     } completion:^(BOOL finished) {
         if (completion) completion(finished);
@@ -535,7 +543,9 @@
 - (NSUInteger)findLargestIndexFromVisibleCells {
     __block NSUInteger largestIndex = 0;
     
-    [self.collectionView.indexPathsForVisibleItems enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
+    [self.collectionView.indexPathsForVisibleItems
+     enumerateObjectsWithOptions:NSEnumerationReverse
+     usingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
         largestIndex = MAX(obj.row, largestIndex);
     }];
     return largestIndex;
