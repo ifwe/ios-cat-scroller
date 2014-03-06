@@ -834,5 +834,10 @@
     self.backgroundViewContainer.frame = self.collectionView.frame;
 }
 
+- (void)dealloc
+{
+    [self.collectionView removeObserver:self forKeyPath:@"frame"];
+}
+
 
 @end
