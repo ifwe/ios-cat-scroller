@@ -626,13 +626,11 @@
 
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     UICollectionViewCell<CatScrollerCollectionViewCell> *aCell =
-    [self.collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass(self.collectionViewCellClass)
-                                                   forIndexPath:indexPath];
+    [self.collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass(self.collectionViewCellClass) forIndexPath:indexPath];
     [self notifyDelegateIfReachedCriticalRange:indexPath.row updateFromPolicy:CSDataRequestingPolicyOnDisplayingNewItem];
     
-    return [aCell render:self.internalData[indexPath.row] ForHeightOrWidth:NO];
+    return [aCell render:self.internalData[indexPath.row]];
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
@@ -671,7 +669,7 @@
 
 #pragma mark - CHTCollectionViewDelegateWaterfallLayout
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout heightForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [self.viewDelegate catScrollerItemsHeightForIndex:indexPath.row];
+    return [self.collectionViewCellClass heightForData:self.internalData[indexPath.row]];
 }
 
 #pragma mark - Message Forwarding

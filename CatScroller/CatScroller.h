@@ -21,7 +21,12 @@
  * (OR)
  * - Will call this method if just want to render the height and width
  */
-- (UICollectionViewCell *)render:(id)cellModel ForHeightOrWidth:(BOOL)isRenderingForHeight;
+- (UICollectionViewCell *)render:(id)cellModel;
+
+/*
+ * Queries the cell for its height.
+ */
++ (CGFloat)heightForData:(id)cellModel;
 
 @optional
 
@@ -47,11 +52,6 @@
  * Sets items' width. All item can have the same width
  */
 - (CGFloat)catScrollerItemsWidth;
-
-/*
- * Sets items' height. Items can have varying heights.
- */
-- (CGFloat)catScrollerItemsHeightForIndex:(int)index;
 
 @optional
 
