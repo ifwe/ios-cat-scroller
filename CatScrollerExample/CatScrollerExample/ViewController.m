@@ -22,8 +22,7 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     [self.containerView addSubview:self.cat.containerView];
@@ -31,18 +30,16 @@
 	// Do any additional setup after loading the view, typically from a nib.
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-- (BOOL)shouldAutorotate{
+- (BOOL)shouldAutorotate {
     return YES;
 }
 
-- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     switch (toInterfaceOrientation) {
         case UIInterfaceOrientationPortrait:
         case UIInterfaceOrientationPortraitUpsideDown:
@@ -57,18 +54,15 @@
     }
 }
 
-- (CatScroller *)cat
-{
+- (CatScroller *)cat {
     if (!_cat) {
-        _cat = [[CatScroller alloc] initWithFrame:self.containerView.bounds
-                          withCollectionCellClass:[CatScrollerCell class] withDelegate:self];
+        _cat = [[CatScroller alloc] initWithFrame:self.containerView.bounds withCollectionCellClass:[CatScrollerCell class] withDelegate:self];
         _cat.dataSrouce = self;
         
         UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.containerView.frame.size.width, self.containerView.frame.size.height)];
         backgroundView.backgroundColor = [UIColor magentaColor];
         
         _cat.backgroundView = backgroundView;
-        
         
         UIView * overHeadView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50.0f, 50.0f)];
         overHeadView.backgroundColor = [UIColor purpleColor];
@@ -96,23 +90,22 @@
 - (IBAction)removeObjectInCollectionView:(UIBarButtonItem *)sender {
     [self.cat removeCellWithArrayOfIndices:[self.cat indexPathsForSelectedItems] completion:nil];
 }
-
-- (IBAction)HeaderSwitch:(UISwitch *)sender {
-    
+- (IBAction)headerSwitch:(UISwitch *)sender {
     if (sender.isOn) {
         UIView * headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.cat.containerView.frame.size.width, 30)];
         headerView.backgroundColor = [UIColor colorWithWhite:((arc4random()%250) / 250.0f) alpha:1.0f];
         [self.cat setHeaderView:headerView withCompletionBlock:nil];
-    }else{
+    } else {
         [self.cat setHeaderView:nil withCompletionBlock:nil];
     }
 }
-- (IBAction)FooterSwitch:(UISwitch *)sender {
+
+- (IBAction)footerSwitch:(UISwitch *)sender {
     if (sender.isOn) {
         UIView * footerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.cat.containerView.frame.size.width, 30)];
         footerView.backgroundColor = [UIColor colorWithWhite:((arc4random()%250) / 250.0f) alpha:1.0f];
         [self.cat setFooterView:footerView withCompletionBlock:nil];
-    }else{
+    } else {
         [self.cat setFooterView:nil withCompletionBlock:nil];
     }
 }
@@ -121,35 +114,24 @@
     [self.cat setVisableAdditionalViewForType:CSAdditionalViewTypeOverhead withCompletionBlock:nil];
 }
 
-
 - (IBAction)background:(UISwitch *)sender {
     [self.cat setVisableAdditionalViewForType:CSAdditionalViewTypeBackground withCompletionBlock:nil];
 }
 
-
-
-
-- (CGFloat) CatScrollerItemsWidth{
+- (CGFloat)catScrollerItemsWidth {
     return 135.0f;
 }
 
-- (void) refershControlAction: (UIRefreshControl *)sender{
+- (void)refershControlAction:(UIRefreshControl *)sender {
     [self.cat.refreshControl endRefreshing];
 }
 
-
-
-- (void)addTwoRandomCells
-{
+- (void)addTwoRandomCells {
     [self.cat pushBackData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] completion:nil];
 }
 
-
 #pragma mark - delegate & data source methods
-
-
-- (void) CatScrollerDidEnterCriticalRange
-{
+- (void)catScrollerDidEnterCriticalRange {
     if (self.autoAddSwitch.isOn) {
         CGFloat randomSecond = arc4random()%5 +1.0f;
         [self performSelector:@selector(addTwoRandomCells) withObject:nil afterDelay:randomSecond];
@@ -160,27 +142,26 @@
             endOfDataView.backgroundColor = [UIColor redColor];
             self.cat.endOfDataFooter = endOfDataView;
         }
-    }else{
+    } else {
         [[[UIAlertView alloc] initWithTitle:@"I'm hungry for more data" message:@"" delegate:nil cancelButtonTitle:@"Data!" otherButtonTitles:nil] show];
         self.cat.endOfDataFooter = nil;
     }
 }
 
-- (NSUInteger) CatScrollerCriticalRangeItemCount
-{
+- (NSUInteger)catScrollerCriticalRangeItemCount {
     return 5;
 }
 
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath{
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath{
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     return YES;
 }
 

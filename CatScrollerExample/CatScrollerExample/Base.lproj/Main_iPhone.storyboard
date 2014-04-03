@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B3116" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="vXZ-lx-hvc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3746"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -60,7 +60,7 @@
                                             <rect key="frame" x="16" y="7" width="51" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <connections>
-                                                <action selector="HeaderSwitch:" destination="vXZ-lx-hvc" eventType="valueChanged" id="8mJ-dY-RiY"/>
+                                                <action selector="headerSwitch:" destination="vXZ-lx-hvc" eventType="valueChanged" id="ssq-bu-ukd"/>
                                             </connections>
                                         </switch>
                                     </barButtonItem>
@@ -70,7 +70,7 @@
                                             <rect key="frame" x="96" y="7" width="51" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <connections>
-                                                <action selector="FooterSwitch:" destination="vXZ-lx-hvc" eventType="valueChanged" id="j4X-JW-VXB"/>
+                                                <action selector="footerSwitch:" destination="vXZ-lx-hvc" eventType="valueChanged" id="jjX-U0-l7U"/>
                                             </connections>
                                         </switch>
                                     </barButtonItem>

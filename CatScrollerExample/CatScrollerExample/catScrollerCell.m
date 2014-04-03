@@ -10,8 +10,13 @@
 
 @implementation CatScrollerCell
 
-- (id)initWithFrame:(CGRect)frame
-{
++ (CGFloat)heightForData:(id)cellModel {
+    NSDictionary *dict = ([cellModel isKindOfClass:[NSDictionary class]]) ? cellModel : nil;
+    
+    return [dict[CELL_HEIGHT_NAME] floatValue];
+}
+
+- (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         
@@ -19,14 +24,8 @@
     return self;
 }
 
-
-- (void)layoutSubviews
-{
-}
-
-- (UICollectionViewCell *)render:(id)cellModel ForHeightOrWidth:(BOOL)isRenderingForHeightOrWidth
-{
-    NSDictionary *dict = ([cellModel isKindOfClass:[NSDictionary class]])?cellModel:nil;
+- (UICollectionViewCell *)render:(id)cellModel {
+    NSDictionary *dict = ([cellModel isKindOfClass:[NSDictionary class]]) ? cellModel : nil;
     
     NSUInteger cellHeight = [dict[CELL_HEIGHT_NAME] integerValue];
     
@@ -40,9 +39,8 @@
     
     self.contentView.frame = contentFrame;
     self.contentView.backgroundColor = [UIColor blueColor];
-//    self.contentView.center = self.center;
     
-    if (!self.backgroundColor){
+    if (!self.backgroundColor) {
         self.backgroundView = [[UIView alloc] initWithFrame:self.bounds];
         self.backgroundView.backgroundColor = [UIColor brownColor];
     }
@@ -55,20 +53,15 @@
     return self;
 }
 
-
-- (void)setSelected:(BOOL)selected
-{
+- (void)setSelected:(BOOL)selected {
     [super setSelected:selected];
 }
 
-
-- (void)setHighlighted:(BOOL)highlighted
-{
+- (void)setHighlighted:(BOOL)highlighted {
     [super setHighlighted:highlighted];
 }
 
--(void)prepareForReuse
-{
+-(void)prepareForReuse {
     [super prepareForReuse];
 }
 
