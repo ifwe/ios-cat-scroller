@@ -11,8 +11,6 @@
 #import "CatScrollerDefaultFooterView.h"
 #import <objc/runtime.h>
 
-
-
 #define HEADER_IDENTIFIER (@"WaterfallHeader")
 #define FOOTER_IDENTIFIER (@"WaterfallFooter")
 
@@ -24,27 +22,26 @@
 
 @implementation NSObject (CatScroller)
 
-
-- (UIEdgeInsets) CatScrollerSectionInset{
+- (UIEdgeInsets)catScrollerSectionInset {
     return DEFAULT_SECTION_INSET;
 }
 
-
-- (CGFloat) CatScrollerVerticalItemSpacing{
+- (CGFloat)catScrollerVerticalItemSpacing {
     return DEFAULT_ITEM_VERTICAL_HEIGHT;
 }
-
 
 // Forwarding defaults
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{}
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{}
 
-
 @end
 
 
-
-@interface CatScroller ()<UICollectionViewDataSource, CHTCollectionViewDelegateWaterfallLayout>
+@interface CatScroller() <UICollectionViewDataSource, CHTCollectionViewDelegateWaterfallLayout>
+/*
+ * The container that contains the functionality of the object
+ */
+@property (strong, nonatomic) UIView *containerView;
 /*
  * The frame of container
  */
@@ -79,82 +76,66 @@
 /*
  * The cell will be use by the collection view
  */
-@property (strong) Class collectionViewCellClass;
-
+@property (strong, nonatomic) Class collectionViewCellClass;
 
 /*
  * Collection view's section header and footer class
  */
 @property (strong, nonatomic) Class collectionViewHeaderViewClass;
 @property (strong, nonatomic) Class collectionViewFooterViewClass;
-
 @property (weak, nonatomic) UICollectionReusableView *endOfDataFooterContainer;
-
 
 @end
 
 
 @implementation CatScroller
-@synthesize containerView = _containerView;
-@synthesize headerViewContainer = _headerViewContainer;
-@synthesize footerViewContainer = _footerViewContainer;
-@synthesize collectionViewHeaderViewClass = _collectionViewHeaderViewClass;
-@synthesize collectionViewFooterViewClass = _collectionViewFooterViewClass;
 
 #pragma mark - init functions
-
-+ (id) CatScrollerWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>)delegate
-{
++ (id)catScrollerWithFrame:(CGRect)frame withCollectionCellClass:(Class)cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>)delegate {
     return [[[self class] alloc] initWithFrame:frame withCollectionCellClass:cellClass withDelegate:delegate];
 }
 
-- (id) initWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>)delegate
-{
+- (id)initWithFrame:(CGRect) frame withCollectionCellClass:(Class)cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>)delegate {
     if (self = [super init]) {
-        _containerFrame = frame;
-        _viewDelegate = delegate;
+        self.containerFrame = frame;
+        self.viewDelegate = delegate;
         
         [self valueInit];
         
         [self updateCollectionViewCellClass:cellClass];
+        self.collectionViewHeaderViewClass = [CatScrollerDefaultHeaderView class];
+        self.collectionViewFooterViewClass = [CatScrollerDefaultFooterView class];
         
         [self.containerView addSubview:self.backgroundViewContainer];
         [self.containerView addSubview:self.collectionView];
         [self.containerView addSubview:self.overheadViewContainer];
-        
         [self.containerView addSubview:self.headerViewContainer];
         [self.containerView addSubview:self.footerViewContainer];
         
         [self setupLayout];
-        
     }
     return self;
 }
 
 
-- (void)valueInit
-{
-    _currentDataRequestState = CSDataRequestingStateWaitingForAddingData;
-    _currentDataUpdatePloicy = CSDataRequestingPolicyOnDisplayingNewItem;
-    
-    _headerFooterAnimationSpeed = DEFAULT_HEADER_FOOTER_ANIMATION_SPEED;
-    _additionalViewAnimationSpeed = DEFAULT_OVERHEAD_BACKGROUND_ANIMATION_SPEED;
+- (void)valueInit {
+    self.currentDataRequestState = CSDataRequestingStateWaitingForAddingData;
+    self.currentDataUpdatePloicy = CSDataRequestingPolicyOnDisplayingNewItem;
+    self.headerFooterAnimationSpeed = DEFAULT_HEADER_FOOTER_ANIMATION_SPEED;
+    self.additionalViewAnimationSpeed = DEFAULT_OVERHEAD_BACKGROUND_ANIMATION_SPEED;
 }
 
 
 #pragma mark - getter & setter
-
-- (UICollectionView *)collectionView
-{
+- (UICollectionView *)collectionView {
     if (!_collectionView) {
         
         CHTCollectionViewWaterfallLayout *layout = [[CHTCollectionViewWaterfallLayout alloc] init];
         
-        layout.sectionInset = [self.viewDelegate CatScrollerSectionInset];
-        layout.verticalItemSpacing = [self.viewDelegate CatScrollerVerticalItemSpacing];
-        layout.itemWidth = [self.viewDelegate CatScrollerItemsWidth];
+        layout.sectionInset = [self.viewDelegate catScrollerSectionInset];
+        layout.verticalItemSpacing = [self.viewDelegate catScrollerVerticalItemSpacing];
+        layout.itemWidth = [self.viewDelegate catScrollerItemsWidth];
         layout.footerHeight = 0.0f;
-        
         
         CGRect collectionFrame = self.containerView.frame;
         // shift by header view stuff
@@ -187,8 +168,7 @@
     return _collectionView;
 }
 
-- (UIView *)containerView
-{
+- (UIView *)containerView {
     if (!_containerView) {
         _containerView = [[UIView alloc] initWithFrame:self.containerFrame];
         _containerView.clipsToBounds = YES;
@@ -196,8 +176,7 @@
     return _containerView;
 }
 
-- (UIView *)headerViewContainer
-{
+- (UIView *)headerViewContainer {
     if (!_headerViewContainer) {
         
         CGRect headerframe = self.containerView.bounds;
@@ -212,8 +191,7 @@
     return _headerViewContainer;
 }
 
-- (UIView *)footerViewContainer
-{
+- (UIView *)footerViewContainer {
     if (!_footerViewContainer) {
         
         CGRect footerViewFrame = self.containerView.bounds;
@@ -230,52 +208,28 @@
     return _footerViewContainer;
 }
 
-- (NSMutableArray *)internalData
-{
+- (NSMutableArray *)internalData {
     if (!_internalData) {
         _internalData = [[NSMutableArray alloc] init];
     }
     return _internalData;
 }
 
-- (NSArray *)data
-{
-    return _internalData;
+- (NSArray *)data {
+    return self.internalData;
 }
 
-- (Class)collectionViewHeaderViewClass
-{
-    if (!_collectionViewHeaderViewClass) {
-        _collectionViewHeaderViewClass = [CatScrollerDefaultHeaderView class];
-    }
-    return _collectionViewHeaderViewClass;
-}
-
-- (void) setCollectionViewHeaderViewClass:(Class)collectionHeaderViewClass
-{
+- (void)setCollectionViewHeaderViewClass:(Class)collectionHeaderViewClass {
     _collectionViewHeaderViewClass = collectionHeaderViewClass;
     [self.collectionView registerClass:_collectionViewHeaderViewClass forSupplementaryViewOfKind:CHTCollectionElementKindSectionHeader withReuseIdentifier:HEADER_IDENTIFIER];
 }
 
-- (Class) collectionViewFooterViewClass
-{
-    if (!_collectionViewFooterViewClass) {
-        _collectionViewFooterViewClass = [CatScrollerDefaultFooterView class];
-    }
-    return _collectionViewFooterViewClass;
-}
-
-
-- (void) setCollectionViewFooterViewClass:(Class)collectionViewFooterViewClass
-{
+- (void)setCollectionViewFooterViewClass:(Class)collectionViewFooterViewClass {
     _collectionViewFooterViewClass = collectionViewFooterViewClass;
     [self.collectionView registerClass:_collectionViewFooterViewClass forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter withReuseIdentifier:FOOTER_IDENTIFIER];
 }
 
-
-
-- (void)setRefreshControl:(UIRefreshControl *)refreshControl
-{
+- (void)setRefreshControl:(UIRefreshControl *)refreshControl {
     [_refreshControl removeFromSuperview];
     _refreshControl = refreshControl;
     if (_refreshControl) {
@@ -283,19 +237,15 @@
     }
 }
 
-- (BOOL)allowsMultipleSelection
-{
+- (BOOL)allowsMultipleSelection {
     return self.collectionView.allowsMultipleSelection;
 }
 
-- (void)setAllowsMultipleSelection:(BOOL)allowsMultipleSelection
-{
+- (void)setAllowsMultipleSelection:(BOOL)allowsMultipleSelection {
     self.collectionView.allowsMultipleSelection = allowsMultipleSelection;
 }
 
-
-- (void)setHeaderView:(UIView *)headerView
-{
+- (void)setHeaderView:(UIView *)headerView {
     // 4 cases in total:
     if (_headerView == nil && headerView == nil) {
         return;
@@ -332,13 +282,29 @@
     }
 }
 
-
-- (void) setFooterView:(UIView *)footerView
-{
+- (void)setFooterView:(UIView *)footerView {
     // 4 cases in total:
     if (_footerView == nil && footerView == nil) {
         return;
     } else if (_footerView == nil && footerView != nil) {
+        _footerView = footerView;
+        _footerView.frame = footerView.bounds;
+        
+        [self.footerViewContainer addSubview:_footerView];
+        
+        [self restoreFramesForFooter:NO];
+    } else if (_footerView != nil && footerView == nil) {
+        
+        [self restoreFramesForFooter:YES];
+        
+        [_footerView removeFromSuperview];
+        
+        _footerView = footerView;
+    } else if (_footerView != nil && footerView != nil){
+        
+        [self restoreFramesForFooter:YES];
+        
+        [_footerView removeFromSuperview];
         
         _footerView = footerView;
         _footerView.frame = footerView.bounds;
@@ -346,34 +312,11 @@
         [self.footerViewContainer addSubview:_footerView];
         
         [self restoreFramesForFooter:NO];
-        
-    }else if (_footerView != nil && footerView == nil) {
-        
-        [self restoreFramesForFooter:YES];
-        
-        [_footerView removeFromSuperview];
-        
-        _footerView = footerView;
-        
-    }else if (_footerView != nil && footerView != nil){
-        
-        [self restoreFramesForFooter:YES];
-        
-        [_footerView removeFromSuperview];
-        
-        _footerView = footerView;
-        _footerView.frame = footerView.bounds;
-        
-        [self.footerViewContainer addSubview:_footerView];
-        
-        [self restoreFramesForFooter:NO];
-        
     }
 }
 
 
-- (UIView *)backgroundViewContainer
-{
+- (UIView *)backgroundViewContainer {
     if (!_backgroundViewContainer) {
         _backgroundViewContainer = [[UIView alloc] initWithFrame:self.collectionView.frame];
         _backgroundViewContainer.userInteractionEnabled = NO;
@@ -382,11 +325,9 @@
     return _backgroundViewContainer;
 }
 
-- (UIView *)overheadViewContainer
-{
+- (UIView *)overheadViewContainer {
     if (!_overheadViewContainer) {
         _overheadViewContainer = [[UIView alloc] initWithFrame:self.collectionView.frame];
-        
         _overheadViewContainer.layer.opacity = 0.0f;
         _overheadViewContainer.backgroundColor = [UIColor colorWithWhite:0.2 alpha:0.3f];
         _overheadViewContainer.userInteractionEnabled = NO;
@@ -394,24 +335,21 @@
     return _overheadViewContainer;
 }
 
-- (void) setBackgroundView:(UIView *)backgroundView
-{
+- (void)setBackgroundView:(UIView *)backgroundView {
     [_backgroundView removeFromSuperview];
     _backgroundView = backgroundView;
     [self.backgroundViewContainer addSubview:_backgroundView];
     [_backgroundView setCenter:self.backgroundViewContainer.center];
 }
 
-- (void)setOverheadView:(UIView *)overheadView
-{
+- (void)setOverheadView:(UIView *)overheadView {
     [_overheadView removeFromSuperview];
     _overheadView = overheadView;
     [self.overheadViewContainer addSubview:_overheadView];
     [_overheadView setCenter:self.overheadViewContainer.center];
 }
 
-- (void)setEndOfDataFooter:(UIView *)endOfDataFooter
-{
+- (void)setEndOfDataFooter:(UIView *)endOfDataFooter {
     [_endOfDataFooter removeFromSuperview];
     _endOfDataFooter = endOfDataFooter;
     
@@ -421,33 +359,28 @@
     }
 }
 
-- (void)setColumnCount:(NSUInteger)columnCount
-{
+- (void)setColumnCount:(NSUInteger)columnCount {
     if (_columnCount == columnCount) {
         return;
     }
-    if ([_collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
+    if ([self.collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
         
         _columnCount = columnCount;
         
-        ((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout).columnCount = columnCount;
-        [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) invalidateLayout];
+        ((CHTCollectionViewWaterfallLayout *)self.collectionView.collectionViewLayout).columnCount = columnCount;
+        [((CHTCollectionViewWaterfallLayout *)self.collectionView.collectionViewLayout) invalidateLayout];
     }
 }
 
 #pragma mark - view functions
-
-- (void)updateCollectionViewCellClass:(Class)cellClass
-{
+- (void)updateCollectionViewCellClass:(Class)cellClass {
     assert([cellClass conformsToProtocol:@protocol(CatScrollerCollectionViewCell)]);
     self.collectionViewCellClass = cellClass;
     
     [self.collectionView reloadData];
 }
 
-
-- (void)setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion
-{
+- (void)setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion {
     CGRect headerContainerFrame = self.headerViewContainer.frame;
     headerContainerFrame.size.height = 0.0f;
     self.headerViewContainer.frame = headerContainerFrame;
@@ -459,10 +392,7 @@
     }];
 }
 
-
-
-- (void) setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion
-{
+- (void)setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion {
     CGRect footerContainerFrame = self.footerViewContainer.frame;
     footerContainerFrame.origin.y = self.containerView.frame.size.height;
     self.footerViewContainer.frame = footerContainerFrame;
@@ -475,9 +405,7 @@
     
 }
 
-
-- (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType
-{
+- (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType {
     self.overheadViewContainer.userInteractionEnabled = NO;
     
     switch (viewType) {
@@ -525,8 +453,7 @@
     }
 }
 
-- (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType withCompletionBlock:(void (^)(BOOL))completion
-{
+- (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType withCompletionBlock:(void (^)(BOOL))completion {
     [UIView animateWithDuration:self.additionalViewAnimationSpeed animations:^{
         [self setVisableAdditionalViewForType:viewType];
     } completion:^(BOOL finished) {
@@ -534,10 +461,7 @@
     }];
 }
 
-
-
-- (void) pushBackData:(NSArray *) data completion:(void (^)(BOOL finished))completion
-{
+- (void)pushBackData:(NSArray *)data completion:(void (^)(BOOL finished))completion {
     if (data.count == 0) {
         self.currentDataRequestState = CSDataRequestingStateNoMoreData;
         return;
@@ -569,11 +493,7 @@
     }];
 }
 
-
-
-
-- (void) removeCellWithArrayOfIndices:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion{
-    
+- (void)removeCellWithArrayOfIndices:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion {
     if (arrayOfIndices.count == 0) {
         return;
     }
@@ -590,9 +510,6 @@
     }];
 }
 
-
-
-
 - (NSUInteger)findLargestIndexFromVisibleCells {
     __block NSUInteger largestIndex = 0;
     
@@ -604,8 +521,7 @@
     return largestIndex;
 }
 
-- (void) setupLayout
-{
+- (void)setupLayout {
     self.headerViewContainer.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
     
     self.collectionView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
@@ -615,23 +531,21 @@
     self.containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 }
 
-- (void) notifyDelegateIfReachedCriticalRange:(NSUInteger) largestIndex updateFromPolicy: (CSDataRequestingPolicy) policy
-{
-    if ((self.internalData.count - largestIndex) >= [self.dataSrouce CatScrollerCriticalRangeItemCount]) {
+- (void)notifyDelegateIfReachedCriticalRange:(NSUInteger)largestIndex updateFromPolicy:(CSDataRequestingPolicy)policy {
+    if ((self.internalData.count - largestIndex) >= [self.dataSrouce catScrollerCriticalRangeItemCount]) {
         return;
     }
     if (self.currentDataUpdatePloicy == policy && self.currentDataRequestState == CSDataRequestingStateNormal) {
         self.currentDataRequestState = CSDataRequestingStateWaitingForAddingData;
         
-        [self.dataSrouce CatScrollerDidEnterCriticalRange];
+        [self.dataSrouce catScrollerDidEnterCriticalRange];
         
     } else if (policy == CSDataRequestingPolicyAlways) {
-        [self.dataSrouce CatScrollerDidEnterCriticalRange];
+        [self.dataSrouce catScrollerDidEnterCriticalRange];
     }
 }
 
-- (void) restoreFramesForHeader: (BOOL) shouldRestore
-{
+- (void)restoreFramesForHeader:(BOOL)shouldRestore {
     CGFloat oldHeaderHeight = self.headerView.frame.size.height;
     CGFloat oldHeaderWidth = self.headerView.frame.size.width;
     
@@ -649,14 +563,10 @@
     collectionViewFrame.size.height += (shouldRestore)?(oldHeaderHeight):(-1.0f * newHeaderHeight);
     
     self.collectionView.frame = collectionViewFrame;
-    
 }
 
-
-- (void) restoreFramesForFooter: (BOOL) shouldRestore
-{
+- (void)restoreFramesForFooter:(BOOL)shouldRestore {
     CGFloat oldFooterHeight = self.footerViewContainer.frame.size.height;
-    
     CGRect footerContinerFrame = self.footerView.bounds;
     CGFloat collectionHeight = self.containerView.frame.size.height;
     CGFloat footerContinerHeight = (shouldRestore)?0:footerContinerFrame.size.height;
@@ -673,18 +583,13 @@
     self.collectionView.frame = collectionViewFrame;
 }
 
-
-- (NSArray *)indexPathsForSelectedItems
-{
+- (NSArray *)indexPathsForSelectedItems {
     return [self.collectionView indexPathsForSelectedItems];
 }
 
-
-- (void) updateDateEndOfDataFooterView
-{
-    
-    if ([_collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
-        [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) setFooterHeight:0.0f];
+- (void) updateDateEndOfDataFooterView {
+    if ([self.collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
+        [((CHTCollectionViewWaterfallLayout *)self.collectionView.collectionViewLayout) setFooterHeight:0.0f];
     }
     
     // End of data footer container is empty. We are done.
@@ -698,8 +603,8 @@
     // otherwise update to footerView's size;
     CGFloat fHeight = self.endOfDataFooter.frame.size.height;
     
-    if ([_collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
-        [((CHTCollectionViewWaterfallLayout *)_collectionView.collectionViewLayout) setFooterHeight:fHeight];
+    if ([self.collectionView.collectionViewLayout isKindOfClass:[CHTCollectionViewWaterfallLayout class]]) {
+        [((CHTCollectionViewWaterfallLayout *)self.collectionView.collectionViewLayout) setFooterHeight:fHeight];
     }
     
     CGRect footerViewContainerFrame = self.endOfDataFooterContainer.frame;
@@ -711,18 +616,16 @@
     CGPoint centerOnX = self.endOfDataFooterContainer.center;
     centerOnX.y = self.endOfDataFooter.center.y;
     self.endOfDataFooter.center = centerOnX;
-    
-    
 }
 
 #pragma mark - UICollectionViewDataSource
 
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.internalData.count;
 }
 
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
-- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
     UICollectionViewCell<CatScrollerCollectionViewCell> *aCell =
     [self.collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass(self.collectionViewCellClass)
@@ -732,10 +635,7 @@
     return [aCell render:self.internalData[indexPath.row] ForHeightOrWidth:NO];
 }
 
-
-
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath{
-    
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     UICollectionReusableView *reusableView = nil;
     
     if ([kind isEqualToString:CHTCollectionElementKindSectionHeader]) {
@@ -755,19 +655,14 @@
     return reusableView;
 }
 
-
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     [self notifyDelegateIfReachedCriticalRange:[self findLargestIndexFromVisibleCells] updateFromPolicy:CSDataRequestingPolicyOnViewWillBeginScroll];
     
     // Forward the scrollViewWillBeginDragging call
     [self.viewDelegate scrollViewWillBeginDragging:scrollView];
 }
 
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self notifyDelegateIfReachedCriticalRange:[self findLargestIndexFromVisibleCells] updateFromPolicy:CSDataRequestingPolicyOnViewEndScroll];
     
     // Forward the scrollViewDidEndDecelerating call
@@ -775,23 +670,12 @@
 }
 
 #pragma mark - CHTCollectionViewDelegateWaterfallLayout
-
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView
-                   layout:(UICollectionViewLayout *)collectionViewLayout
- heightForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionViewCell<CatScrollerCollectionViewCell> *aCell = [[self.collectionViewCellClass alloc] init];
-    [aCell render:self.internalData[indexPath.row] ForHeightOrWidth:YES];
-    return aCell.frame.size.height;
+- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout heightForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [self.viewDelegate catScrollerItemsHeightForIndex:indexPath.row];
 }
 
-
 #pragma mark - Message Forwarding
-
-
-- (BOOL)respondsToSelector:(SEL)aSelector
-{
+- (BOOL)respondsToSelector:(SEL)aSelector {
     BOOL result = [super respondsToSelector:aSelector];
     if (result) {
         return YES;
@@ -812,8 +696,7 @@
         return NO;
 }
 
-- (void)forwardInvocation:(NSInvocation *)anInvocation
-{
+- (void)forwardInvocation:(NSInvocation *)anInvocation {
     // Check if view delegate conforms to CatScrollerCollectionViewDelegate protocol forward all the call view delegate response to
     if ([self.viewDelegate conformsToProtocol:@protocol(CatScrollerCollectionViewDelegate)]
         && [self.viewDelegate respondsToSelector:anInvocation.selector])
@@ -823,21 +706,11 @@
     }
 }
 
-
-
 #pragma mark - NSKeyValueObserving 
 // For setting background and overhead view
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     self.overheadViewContainer.frame = self.collectionView.frame;
     self.backgroundViewContainer.frame = self.collectionView.frame;
 }
-
-- (void)dealloc
-{
-    [self.collectionView removeObserver:self forKeyPath:@"frame"];
-}
-
 
 @end

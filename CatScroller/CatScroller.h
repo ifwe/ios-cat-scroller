@@ -10,7 +10,6 @@
 #import <UIKit/UIKit.h>
 #import "CHTCollectionViewWaterfallLayout.h"
 
-
 // This ui collection view cell need to conforms to this protocol
 @protocol CatScrollerCollectionViewCell <NSObject>
 
@@ -22,7 +21,7 @@
  * (OR)
  * - Will call this method if just want to render the height and width
  */
-- (UICollectionViewCell *) render:(id) cellModel ForHeightOrWidth:(BOOL) isRenderingForHeight;
+- (UICollectionViewCell *)render:(id)cellModel ForHeightOrWidth:(BOOL)isRenderingForHeight;
 
 @optional
 
@@ -40,36 +39,34 @@
 
 
 
-
-
-
-
-
 @protocol CatScrollerCollectionViewDelegate <UICollectionViewDelegate>
 
 @required
 
-
 /*
  * Sets items' width. All item can have the same width
  */
-- (CGFloat) CatScrollerItemsWidth;
+- (CGFloat)catScrollerItemsWidth;
+
+/*
+ * Sets items' height. Items can have varying heights.
+ */
+- (CGFloat)catScrollerItemsHeightForIndex:(int)index;
 
 @optional
 
 /*
  * Sets section's inset
  */
-- (UIEdgeInsets) CatScrollerSectionInset;
+- (UIEdgeInsets)catScrollerSectionInset;
 
 /*
  * Sets item's vertical spacing
  */
-- (CGFloat) CatScrollerVerticalItemSpacing;
+- (CGFloat)catScrollerVerticalItemSpacing;
 
 
 @end
-
 
 
 
@@ -80,18 +77,14 @@
 /*
  * Will be called When collection view is scrolled into the critical range
  */
-- (void) CatScrollerDidEnterCriticalRange;
+- (void)catScrollerDidEnterCriticalRange;
 
 /*
  * The Critical number of item left in the collection view
  */
-- (NSUInteger) CatScrollerCriticalRangeItemCount;
+- (NSUInteger)catScrollerCriticalRangeItemCount;
 
 @end
-
-
-
-
 
 
 
@@ -129,18 +122,12 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 
 
 
-
-
-
-
-
-
 @interface CatScroller : NSObject
 
 /*
  * The container that contains the functionality of the object
  */
-@property (strong, nonatomic, readonly) UIView *containerView;
+@property (nonatomic, strong, readonly) UIView *containerView;
 
 /*
  * updates the collection view's column count
@@ -222,12 +209,12 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 /*
  * Manufactures a CatScroller
  */
-+ (id) CatScrollerWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>) delegate;
++ (id)catScrollerWithFrame:(CGRect)frame withCollectionCellClass:(Class)cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>) delegate;
 
 /*
  * The frame will set the containerView's size of the container frame
  */
-- (id) initWithFrame:(CGRect) frame withCollectionCellClass:(Class) cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>) delegate;
+- (id)initWithFrame:(CGRect)frame withCollectionCellClass:(Class)cellClass withDelegate:(id<CatScrollerCollectionViewDelegate>) delegate;
 
 /*
  * This tells what kind of cell should the collection view uses.
@@ -236,7 +223,7 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  * When collection view require new cell. It will call on the methods in 
  * CatScrollerCollectionViewCell protocol to populate new cell
  */
-- (void) updateCollectionViewCellClass:(Class) cellClass;
+- (void)updateCollectionViewCellClass:(Class)cellClass;
 
 
 /*
@@ -244,37 +231,35 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  *
  * For Non-animated setting please call setHeaderView: or setFooterView:
  */
-- (void) setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion;
+- (void)setHeaderView:(UIView *)headerView withCompletionBlock:(void (^)(BOOL finished))completion;
 
-- (void) setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion;
+- (void)setFooterView:(UIView *)footerView withCompletionBlock:(void (^)(BOOL finished))completion;
 
 /*
  * set additional view's visibility
  */
-- (void) setVisableAdditionalViewForType:(CSAdditionalViewType) viewType;
+- (void)setVisableAdditionalViewForType:(CSAdditionalViewType) viewType;
 
 
 /*
  * set additional view's visibility with animation
  */
-- (void) setVisableAdditionalViewForType:(CSAdditionalViewType) viewType withCompletionBlock:(void (^)(BOOL finished))completion;
-
+- (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType withCompletionBlock:(void (^)(BOOL finished))completion;
 
 
 /*
  * will add data to the internal data array and a completion block
  */
-- (void) pushBackData:(NSArray *) data completion:(void (^)(BOOL finished))completion;
+- (void)pushBackData:(NSArray *)data completion:(void (^)(BOOL finished))completion;
 
 /*
  * Will remove data from the internal data array and a completion block
  */
-- (void) removeCellWithArrayOfIndices:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion;
+- (void)removeCellWithArrayOfIndices:(NSArray *)arrayOfIndices completion:(void (^)(BOOL finished))completion;
 
 /*
  * get array of selected index paths
  */
-- (NSArray *) indexPathsForSelectedItems; // returns nil or an array of selected index paths
-
+- (NSArray *)indexPathsForSelectedItems; // returns nil or an array of selected index paths
 
 @end
