@@ -135,6 +135,11 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 @property (nonatomic) NSUInteger columnCount;
 
 /*
+ * array of all indices in internal data
+ */
+@property (nonatomic, strong, readonly) NSArray *indicesOfAllInternalData;
+
+/*
  * The data, user supplies for the table's contain
  */
 @property (strong, readonly) NSArray *data;
@@ -256,6 +261,16 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  * Will remove data from the internal data array and a completion block
  */
 - (void)removeCellWithArrayOfIndices:(NSArray *)arrayOfIndices completion:(void (^)(BOOL finished))completion;
+
+/*
+ * Will remove all data from the internal data array
+ */
+- (void) clearAllData;
+
+/*
+ * Will remove all data from the internal data array and a completion block
+ */
+- (void)clearAllDataWithcompletion:(void (^)(BOOL finished))completion;
 
 /*
  * get array of selected index paths
