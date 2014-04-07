@@ -159,9 +159,12 @@
         [_collectionView registerClass:[CatScrollerDefaultFooterView class] forSupplementaryViewOfKind:CHTCollectionElementKindSectionFooter withReuseIdentifier:FOOTER_IDENTIFIER];
         
         _collectionView.clipsToBounds = NO;
+        _collectionView.alwaysBounceVertical = YES;
         
         // added Key value observing
-        [self.collectionView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+        [_collectionView addObserver:_collectionView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
+        
+        
         
         _collectionView.backgroundColor = [UIColor clearColor];
     }
@@ -213,6 +216,16 @@
         _internalData = [[NSMutableArray alloc] init];
     }
     return _internalData;
+}
+
+- (NSArray *)indicesOfAllInternalData{
+    NSMutableArray *arrayOfIndices = [[NSMutableArray alloc] init];
+    NSUInteger indexSize = self.internalData.count;
+    while (indexSize != 0) {
+        indexSize --;
+        [arrayOfIndices addObject:[NSIndexPath indexPathForRow:indexSize inSection:0]];
+    }
+    return arrayOfIndices;
 }
 
 - (NSArray *)data {
@@ -508,6 +521,10 @@
     } completion:^(BOOL finished) {
         if (completion) completion(finished);
     }];
+}
+
+- (void)clearAllDataWithcompletion:(void (^)(BOOL finished))completion {
+    [self removeCellWithArrayOfIndices:self.indicesOfAllInternalData completion:completion];
 }
 
 - (NSUInteger)findLargestIndexFromVisibleCells {
