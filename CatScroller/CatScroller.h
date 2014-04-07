@@ -263,11 +263,6 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 - (void)removeCellWithArrayOfIndices:(NSArray *)arrayOfIndices completion:(void (^)(BOOL finished))completion;
 
 /*
- * Will remove all data from the internal data array
- */
-- (void) clearAllData;
-
-/*
  * Will remove all data from the internal data array and a completion block
  */
 - (void)clearAllDataWithcompletion:(void (^)(BOOL finished))completion;

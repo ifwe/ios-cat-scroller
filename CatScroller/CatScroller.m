@@ -523,11 +523,6 @@
     }];
 }
 
-- (void) clearAllData {
-    [self removeCellWithArrayOfIndices:self.indicesOfAllInternalData completion:nil];
-}
-
-
 - (void)clearAllDataWithcompletion:(void (^)(BOOL finished))completion {
     [self removeCellWithArrayOfIndices:self.indicesOfAllInternalData completion:completion];
 }
