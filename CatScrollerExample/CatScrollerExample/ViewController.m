@@ -123,6 +123,7 @@
 }
 
 - (void)refershControlAction:(UIRefreshControl *)sender {
+    [self.cat clearAllData];
     [self.cat.refreshControl endRefreshing];
 }
 
