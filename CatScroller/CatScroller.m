@@ -160,13 +160,10 @@
         
         _collectionView.clipsToBounds = NO;
         _collectionView.alwaysBounceVertical = YES;
+        _collectionView.backgroundColor = [UIColor clearColor];
         
         // added Key value observing
-        [_collectionView addObserver:_collectionView forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
-        
-        
-        
-        _collectionView.backgroundColor = [UIColor clearColor];
+        [_collectionView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:nil];
     }
     return _collectionView;
 }
