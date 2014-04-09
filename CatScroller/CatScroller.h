@@ -250,7 +250,10 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
  * set additional view's visibility with animation
  */
 - (void)setVisableAdditionalViewForType:(CSAdditionalViewType)viewType withCompletionBlock:(void (^)(BOOL finished))completion;
-
+/*
+ *  reload indices at location
+ */
+- (void)reloadDataAtIndices:(NSArray *)arrayOfIndexPath completion:(void (^)(BOOL finished))completion;
 
 /*
  * will add data to the internal data array and a completion block
@@ -260,7 +263,7 @@ typedef NS_OPTIONS(NSUInteger, CSAdditionalViewType) {
 /*
  * Will remove data from the internal data array and a completion block
  */
-- (void)removeCellWithArrayOfIndices:(NSArray *)arrayOfIndices completion:(void (^)(BOOL finished))completion;
+- (void)removeCellWithArrayOfIndices:(NSArray *)arrayOfIndexPath completion:(void (^)(BOOL finished))completion;
 
 /*
  * Will remove all data from the internal data array and a completion block

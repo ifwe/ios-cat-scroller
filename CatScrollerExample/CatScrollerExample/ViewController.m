@@ -79,7 +79,7 @@
 }
 
 - (IBAction)addDataToCollection:(UIBarButtonItem *)sender {
-    [self.cat pushBackData:@[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)}, @{CELL_HEIGHT_NAME:@(arc4random()%130+5)}] completion:nil];
+    [self.cat pushBackData:@[[@{CELL_HEIGHT_NAME:@(arc4random()%130+5)} mutableCopy], [@{CELL_HEIGHT_NAME:@(arc4random()%130+5)} mutableCopy]] completion:nil];
 }
 
 
@@ -123,7 +123,7 @@
 }
 
 - (void)refershControlAction:(UIRefreshControl *)sender {
-    [self.cat clearAllData];
+    [self.cat clearAllDataWithcompletion:nil];
     [self.cat.refreshControl endRefreshing];
 }
 

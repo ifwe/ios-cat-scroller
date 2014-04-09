@@ -471,6 +471,20 @@
     }];
 }
 
+
+- (void)reloadDataAtIndices:(NSArray *)arrayOfIndexPath completion:(void (^)(BOOL finished))completion{
+    if (arrayOfIndexPath.count == 0) {
+        return;
+    }
+    
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView reloadItemsAtIndexPaths:arrayOfIndexPath];
+    } completion:^(BOOL finished) {
+        if (completion) completion(finished);
+    }];
+}
+
+
 - (void)pushBackData:(NSArray *)data completion:(void (^)(BOOL finished))completion {
     if (data.count == 0) {
         self.currentDataRequestState = CSDataRequestingStateNoMoreData;
@@ -503,18 +517,18 @@
     }];
 }
 
-- (void)removeCellWithArrayOfIndices:(NSArray *) arrayOfIndices completion:(void (^)(BOOL finished))completion {
-    if (arrayOfIndices.count == 0) {
+- (void)removeCellWithArrayOfIndices:(NSArray *) arrayOfIndexPath completion:(void (^)(BOOL finished))completion {
+    if (arrayOfIndexPath.count == 0) {
         return;
     }
     __block NSMutableIndexSet *aSetOfindices = [[NSMutableIndexSet alloc] init];
-    [arrayOfIndices enumerateObjectsUsingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
+    [arrayOfIndexPath enumerateObjectsUsingBlock:^(NSIndexPath *obj, NSUInteger idx, BOOL *stop) {
         [aSetOfindices addIndex:obj.row];
     }];
     [self.internalData removeObjectsAtIndexes:aSetOfindices];
     
     [self.collectionView performBatchUpdates:^{
-        [self.collectionView deleteItemsAtIndexPaths:arrayOfIndices];
+        [self.collectionView deleteItemsAtIndexPaths:arrayOfIndexPath];
     } completion:^(BOOL finished) {
         if (completion) completion(finished);
     }];
